@@ -1,0 +1,23 @@
+<div class="high-occupancy-page-container">
+  <div class="overlay"></div>
+  <div class="content-wrapper">
+    
+    <div class="page-layout">
+      <!-- Filtros en la izquierda -->
+      <div class="filters-section">
+        <app-metrics-filter 
+          title="Filtros de Alta Ocupación"
+          [initialFilterData]="initialFilterData"
+          (filterChange)="onFilterChange($event)">
+        </app-metrics-filter>
+      </div>
+
+      <!-- Gráfica en la derecha -->
+      <div class="chart-section">
+        <div class="chart-wrapper">
+          <app-high-occupancy></app-high-occupancy>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

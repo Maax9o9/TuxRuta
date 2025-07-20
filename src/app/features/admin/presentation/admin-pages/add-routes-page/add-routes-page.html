@@ -1,0 +1,21 @@
+<div class="add-routes-page-container">
+  <div class="content-wrapper">
+  
+    <div class="main-content">
+      <div class="form-section">
+        <app-create-route-form #formComponent></app-create-route-form>
+      </div>
+      
+      <div class="map-section">
+        <div class="map-wrapper">
+          <app-google-map 
+            #mapComponent 
+            [formCompleted]="formComponent?.formCompleted || false"
+            (routeTraced)="onFormCompleted()"
+            (routeCleared)="onRouteCleared()">
+          </app-google-map>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

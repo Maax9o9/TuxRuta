@@ -1,0 +1,103 @@
+.login-container {
+
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+
+  position: relative;
+  flex-shrink: 0;
+}
+
+.login-card {
+  background: rgba(15, 30, 15, 0.5);
+  backdrop-filter: blur(8px); 
+  border-radius: 16px;
+  padding: 40px 30px;
+  width: 400px;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  /* Hacer que el tamaño sea completamente fijo e independiente */
+  min-width: 400px;
+  min-height: 550px;
+  max-width: 400px;
+  max-height: 550px;
+  box-sizing: border-box;
+  
+  /* Centrado con márgenes automáticos */
+  margin: auto;
+}
+
+.logo {
+  width: 180px;
+  height: 180px;
+  margin-bottom: 30px;
+  object-fit: contain;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none; 
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.input {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+
+  &::placeholder {
+    color: #ccc;
+  }
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #000;
+  color: #fff;
+  font-weight: 500;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 15px;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: #222;
+  }
+}

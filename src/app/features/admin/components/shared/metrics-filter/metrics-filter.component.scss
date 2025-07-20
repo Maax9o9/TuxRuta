@@ -1,0 +1,227 @@
+.filters-section {
+  width: 100%;
+  max-width: 950px;
+  background-color: #343434;
+  border: none;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+
+  h2 {
+    margin: 0 0 1rem 0;
+    color: #ffffffcc;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
+
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.filter-select {
+  background-color: #ebf9c9;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    background-color: #e8f7c1;
+  }
+
+  &:focus {
+    background-color: #e8f7c1;
+    box-shadow: 0 0 0 2px rgba(167, 201, 87, 0.3);
+  }
+
+  /* Custom dropdown arrow styling */
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.5rem;
+
+  /* Style the option elements */
+  option {
+    background-color: #343434;
+    color: #ffffffcc;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.2rem 0;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(167, 201, 87, 0.2);
+      color: #A7C957;
+    }
+
+    &:checked {
+      background-color: rgba(167, 201, 87, 0.3);
+      color: #A7C957;
+      font-weight: 600;
+    }
+  }
+}
+
+/* Custom dropdown styles */
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+
+  &:has(.dropdown-menu.expanded) {
+    z-index: 9998;
+  }
+
+  label {
+    font-weight: 500;
+    color: #ffffffcc;
+    font-size: 1rem;
+  }
+}
+
+.dropdown-button {
+  background-color: #ebf9c9;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 200px;
+
+  &:hover {
+    background-color: #e8f7c1;
+  }
+
+  &:focus {
+    background-color: #e8f7c1;
+    box-shadow: 0 0 0 2px rgba(167, 201, 87, 0.3);
+  }
+}
+
+.dropdown-arrow {
+  font-size: 0.8rem;
+  color: #333;
+  transition: transform 0.3s ease;
+  
+  &.expanded {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #343434;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+
+  &.expanded {
+    max-height: 350px;
+    overflow-y: auto;
+  }
+}
+
+.dropdown-item {
+  margin: 0;
+}
+
+.dropdown-option {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #ffffffcc;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  margin: 0.25rem 0.5rem;
+
+  &:hover {
+    background: rgba(167, 201, 87, 0.1);
+    color: #A7C957;
+  }
+
+  &.active {
+    background: rgba(167, 201, 87, 0.2);
+    color: #A7C957;
+    font-weight: 600;
+  }
+}
+
+.filter-description {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(167, 201, 87, 0.1);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 300px;
+  
+  span {
+    color: #ffffffcc;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-group {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .filter-description {
+    max-width: none;
+    text-align: center;
+  }
+}

@@ -1,0 +1,107 @@
+.create-route-form-container {
+  background-color: #343434;
+  border: 1px solid #b2f5a5;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 420px; 
+  height: 500px;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  color: #fff;
+}
+
+.alert {
+  background-color: #fbffbd;
+  border-left: 4px solid #d6da57;
+  border-radius: 6px;
+  padding: 0.8rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #333;
+  font-size: 0.9rem;
+  width: 400px; 
+}
+
+.alert-icon {
+  margin-top: 0.1rem;
+}
+
+.alert-content h4 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+}
+
+.alert-content p {
+  margin: 0;
+}
+
+.route-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem; 
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffffcc;
+}
+
+.form-input,
+.form-textarea {
+  background-color: #ebf9c9;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem; 
+  font-size: 1rem; 
+  color: #333;
+  width: 400px;
+  outline: none;
+}
+
+.form-textarea {
+  resize: none;
+  height: 110px; 
+}
+
+.form-actions-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  padding: 0.6rem 1.1rem; 
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem; 
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn svg {
+  stroke: #333;
+}
+
+.btn-secondary,
+.btn-primary {
+  background-color: #ebf9c9;
+  color: #333;
+}

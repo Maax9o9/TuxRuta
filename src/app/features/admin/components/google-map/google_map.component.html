@@ -1,0 +1,68 @@
+<div class="map-container">
+  <div class="route-controls">
+    <button 
+      class="route-btn"
+      [ngClass]="{ 
+        'trace-btn': !isRouteCreationMode, 
+        'undo-btn': isRouteCreationMode 
+      }"
+      (click)="toggleRouteCreationMode()"
+      [disabled]="!mapInitialized || !formCompleted">
+      {{ isRouteCreationMode ? 'Desactivar Trazado' : 'Activar Trazado' }}
+    </button>
+
+    <button 
+      class="route-btn undo-btn" 
+      (click)="removeLastMarker()"
+      [disabled]="routePoints.length === 0 || !isRouteCreationMode || !mapInitialized || !formCompleted">
+      Eliminar Último
+    </button>
+
+    <button 
+      class="route-btn clear-btn" 
+      (click)="clearRoute()"
+      [disabled]="routePoints.length === 0 || !mapInitialized || !formCompleted">
+      Limpiar Ruta
+    </button>
+  </div>
+
+  <div class="route-info">
+    <p *ngIf="!mapInitialized" class="loading-message">
+      Inicializando mapa...
+    </p>
+
+    <p *ngIf="mapInitialized && !formCompleted" class="form-required-message">
+      Complete el formulario para poder trazar rutas en el mapa
+    </p>
+
+    <p *ngIf="mapInitialized && formCompleted && isRouteCreationMode">
+      {{
+        routePoints.length === 0 ? 'Haz click en el mapa para agregar puntos' :
+        routePoints.length === 1 ? 'Agrega un punto más para trazar la ruta' :
+        hasValidRoute ? 'Puntos: ' + routePoints.length + ' - Ruta trazada correctamente' :
+        'Trazando ruta con ' + routePoints.length + ' puntos...'
+      }}
+    </p>
+
+    <p *ngIf="mapInitialized && formCompleted && !isRouteCreationMode && routePoints.length > 0">
+      ✅ Ruta con {{ routePoints.length }} puntos creada. Formulario listo para guardar.
+    </p>
+
+    <p *ngIf="mapInitialized && formCompleted && !isRouteCreationMode && routePoints.length === 0">
+      ⏳ Presiona "Activar Trazado" para comenzar a crear la ruta.
+    </p>
+  </div>
+
+  <!-- Mapa -->
+  <google-map
+    #mapElement
+    height="100%"
+    width="100%"
+    [center]="center"
+    [zoom]="zoom"
+    [options]="mapOptions"
+    [class.route-creation-mode]="isRouteCreationMode"
+    (mapReady)="onMapReady($event)"
+    (mapInitialized)="onMapInitialized($event)">
+  </google-map>
+</div>

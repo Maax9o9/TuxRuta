@@ -1,0 +1,65 @@
+<div class="dashboard-page-container">
+  <div class="overlay"></div>
+  <div class="content-wrapper">
+    
+    <div class="filters-section">
+      <h2>Filtros de Dashboard</h2>
+      <div class="filters-container">
+        
+        <div class="filter-group">
+          <label for="filterType">Tipo de Filtro:</label>
+          <select id="filterType" [(ngModel)]="filterType" (change)="onFilterTypeChange()" class="filter-select">
+            <option value="month">Por Mes</option>
+            <option value="week">Por Semana</option>
+          </select>
+        </div>
+
+        <div class="filter-group" *ngIf="filterType === 'month'">
+          <label for="yearSelect">Año:</label>
+          <select id="yearSelect" [(ngModel)]="selectedYear" (change)="onYearChange()" class="filter-select">
+            <option *ngFor="let year of availableYears" [value]="year">{{year}}</option>
+          </select>
+        </div>
+
+        <div class="filter-group" *ngIf="filterType === 'month'">
+          <label for="monthSelect">Mes:</label>
+          <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange()" class="filter-select">
+            <option *ngFor="let month of availableMonths" [value]="month.value">{{month.name}}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="routeSelect">Ruta:</label>
+          <select id="routeSelect" [(ngModel)]="selectedRoute" (change)="onRouteChange()" class="filter-select">
+            <option *ngFor="let route of availableRoutes" [value]="route.id">{{route.name}}</option>
+          </select>
+        </div>
+
+        <div class="filter-description">
+          <span>{{getFilterDescription()}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-wrapper">
+        <app-normal-distribution></app-normal-distribution>
+      </div>
+      <div class="chart-wrapper">
+        <app-high-occupancy></app-high-occupancy>
+      </div>
+      <div class="chart-wrapper">
+        <app-confidence-interval></app-confidence-interval>
+      </div>
+      <div class="chart-wrapper">
+        <app-passengers-total></app-passengers-total>
+      </div>
+      <div class="chart-wrapper">
+        <app-rush-hour></app-rush-hour>
+      </div>
+      <div class="chart-wrapper">
+        <app-travel-promedy></app-travel-promedy>
+      </div>
+    </div>
+  </div>
+</div>

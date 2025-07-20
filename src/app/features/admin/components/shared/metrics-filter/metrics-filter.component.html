@@ -1,0 +1,92 @@
+<div class="filters-section">
+  <h2>{{ title }}</h2>
+  <div class="filters-container">
+    
+    <div class="filter-group">
+      <label for="filterType">Tipo de Filtro:</label>
+      <div class="custom-dropdown">
+        <button class="dropdown-button" (click)="toggleDropdown('filterType')">
+          <span>{{ getFilterTypeLabel() }}</span>
+          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('filterType')">▼</i>
+        </button>
+        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('filterType')">
+          <li class="dropdown-item">
+            <button class="dropdown-option" 
+                    [class.active]="filterType === 'month'" 
+                    (click)="selectFilterType('month')">
+              Por Mes
+            </button>
+          </li>
+          <li class="dropdown-item">
+            <button class="dropdown-option" 
+                    [class.active]="filterType === 'week'" 
+                    (click)="selectFilterType('week')">
+              Por Semana
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-group" *ngIf="filterType === 'month'">
+      <label for="yearSelect">Año:</label>
+      <div class="custom-dropdown">
+        <button class="dropdown-button" (click)="toggleDropdown('year')">
+          <span>{{ selectedYear }}</span>
+          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('year')">▼</i>
+        </button>
+        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('year')">
+          <li class="dropdown-item" *ngFor="let year of availableYears">
+            <button class="dropdown-option" 
+                    [class.active]="selectedYear === year" 
+                    (click)="selectYear(year)">
+              {{ year }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-group" *ngIf="filterType === 'month'">
+      <label for="monthSelect">Mes:</label>
+      <div class="custom-dropdown">
+        <button class="dropdown-button" (click)="toggleDropdown('month')">
+          <span>{{ getSelectedMonthName() }}</span>
+          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('month')">▼</i>
+        </button>
+        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('month')">
+          <li class="dropdown-item" *ngFor="let month of availableMonths">
+            <button class="dropdown-option" 
+                    [class.active]="selectedMonth === month.value" 
+                    (click)="selectMonth(month.value)">
+              {{ month.name }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label for="routeSelect">Ruta:</label>
+      <div class="custom-dropdown">
+        <button class="dropdown-button" (click)="toggleDropdown('route')">
+          <span>{{ getSelectedRouteName() }}</span>
+          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('route')">▼</i>
+        </button>
+        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('route')">
+          <li class="dropdown-item" *ngFor="let route of availableRoutes">
+            <button class="dropdown-option" 
+                    [class.active]="selectedRoute === route.id" 
+                    (click)="selectRoute(route.id)">
+              {{ route.name }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-description">
+      <span>{{getFilterDescription()}}</span>
+    </div>
+  </div>
+</div>

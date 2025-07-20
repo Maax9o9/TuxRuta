@@ -1,0 +1,291 @@
+.map-container {
+  position: relative;
+  width: 520px;
+  height: 620px;
+  max-height: 620px;
+  display: flex;
+  flex-direction: column;
+  margin: 2rem auto; /* Increased top margin to move map lower */
+  background: transparent;
+}
+
+.route-controls {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.route-btn {
+  padding: 6px 18px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  color: #111;
+  white-space: nowrap;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &.trace-btn {
+    background-color: #a3d84a;
+    border-color: #86c421;
+    color: #111;
+
+    &:hover {
+      background-color: #9bd03f;
+    }
+  }
+
+  &.undo-btn {
+    background-color: #e23252;
+    color: #fff;
+    border-color: #b91c3a;
+
+    &:hover {
+      background-color: #c41d40;
+    }
+  }
+
+  &.clear-btn {
+    background-color: #b3d8f9;
+    color: #111;
+    border-color: #7db9e8;
+
+    &:hover {
+      background-color: #a3cefa;
+    }
+  }
+}
+
+
+.route-info {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: auto;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .loading-message {
+    color: #6b7280;
+    font-style: italic;
+    text-align: center;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .form-required-message {
+    color: #f59e0b;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: #fffbeb;
+    border-radius: 6px;
+    border: 1px solid #fbbf24;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
+
+google-map {
+  display: block;
+  width: 520px;
+  height: 620px;
+  flex: 1;
+  border: none !important;
+  border-radius: 0 !important;
+  max-height: 620px;
+  background: transparent !important; 
+  
+  &.route-creation-mode {
+    cursor: crosshair;
+    
+    ::ng-deep * {
+      cursor: crosshair !important;
+    }
+  }
+}
+
+:host ::ng-deep .route-marker {
+  width: 24px !important;
+  height: 24px !important;
+  background-color: #2196F3 !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-weight: bold !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 1000 !important;
+}
+
+:host ::ng-deep .gm-style > div:first-child {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+:host ::ng-deep .gm-style > div:first-child > div {
+  z-index: 1 !important;
+}
+
+:host ::ng-deep [data-marker] {
+  z-index: 1000 !important;
+}
+
+:host ::ng-deep .gm-style .gm-style-iw,
+:host ::ng-deep .gm-style .gm-style-iw-c {
+  z-index: 1001 !important;
+}
+
+.route-creation-mode {
+  cursor: crosshair !important;
+  
+  div {
+    cursor: crosshair !important;
+  }
+  
+  .route-controls {
+    cursor: auto !important;
+    
+    * {
+      cursor: auto !important;
+    }
+  }
+  
+  .route-info {
+    cursor: auto !important;
+    
+    * {
+      cursor: auto !important;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .map-container {
+    width: 90%;
+    height: 500px;
+    max-height: 500px;
+    margin: 1rem auto;
+  }
+  
+  google-map {
+    width: 100%;
+    height: 500px;
+    max-height: 500px;
+  }
+  
+  :host {
+    width: 90%;
+    height: 500px;
+    max-height: 500px;
+    margin: 1rem auto !important;
+  }
+  
+  .route-controls {
+    flex-direction: column;
+    width: calc(100% - 30px);
+    gap: 8px;
+  }
+  
+  .route-btn {
+    width: 100%;
+    margin-bottom: 4px;
+    padding: 10px 20px;
+    font-size: 13px;
+    min-width: auto;
+  }
+  
+  .route-info {
+    bottom: 70px;
+    max-width: calc(100% - 30px);
+    padding: 10px 16px;
+    
+    p, .loading-message, .form-required-message {
+      font-size: 13px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .map-container {
+    width: 95%;
+    height: 400px;
+    max-height: 400px;
+    margin: 0.5rem auto;
+  }
+  
+  google-map {
+    width: 100%;
+    height: 400px;
+    max-height: 400px;
+  }
+  
+  :host {
+    width: 95%;
+    height: 400px;
+    max-height: 400px;
+    margin: 0.5rem auto !important;
+  }
+}
+
+:host {
+  display: block;
+  width: 520px;
+  height: 620px;
+  max-height: 620px;
+  border: none !important;
+  margin: 2rem auto !important; /* Increased top margin to move map lower */
+  padding: 0 !important;
+  overflow: hidden;
+  background: transparent !important; /* Remove white background */
+}
+
+:host ::ng-deep google-map {
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important; /* Remove white background */
+}
+
+:host ::ng-deep .gm-style {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important; /* Remove white background from Google Maps */
+}
+
+:host ::ng-deep .gm-style > div:first-child {
+  border: none !important;
+  border-radius: 0 !important;
+}
