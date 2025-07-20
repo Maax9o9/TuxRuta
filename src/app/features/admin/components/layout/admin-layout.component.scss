@@ -1,0 +1,27 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #F7FAFC;
+}
+
+.admin-content {
+  flex: 1;
+  margin-left: 250px; /* Width of sidebar */
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: auto;
+  background: #F7FAFC;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-content {
+    margin-left: 200px; /* Adjusted for smaller sidebar */
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-content {
+    margin-left: 180px; /* Adjusted for smallest sidebar */
+  }
+}

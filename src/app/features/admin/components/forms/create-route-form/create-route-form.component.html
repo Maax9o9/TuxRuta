@@ -1,0 +1,62 @@
+<div class="create-route-form-container"> 
+  <div class="messages-container">
+    <div class="alert" [ngClass]="'alert-' + getAlertType()">
+      <div class="alert-icon">
+        <svg *ngIf="getAlertType() === 'warning'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+      </div>
+      <div class="alert-content">
+        <h4>Paso 1: Completar el formulario</h4>
+        <p>Completa el formulario para poder trazar la ruta en el mapa</p>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="routeForm" (ngSubmit)="onSubmit()" class="route-form">
+    
+    <div class="form-group">
+      <label for="nombre" class="form-label">Nombre de la ruta</label>
+      <input 
+        type="text" 
+        id="nombre" 
+        formControlName="nombre"
+        class="form-input"
+        maxlength="100"
+        (input)="clearMessages()"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="descripcion" class="form-label">Descripcion</label>
+      <textarea 
+        id="descripcion" 
+        formControlName="descripcion"
+        class="form-textarea"
+        maxlength="500"
+        rows="3"
+        (input)="clearMessages()"
+      ></textarea>
+    </div>
+
+
+  <div class="form-actions-right">
+    <button type="button" class="btn btn-secondary" (click)="resetForm()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+      Limpiar
+    </button>
+
+    <button type="submit" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+        <polyline points="17,21 17,13 7,13 7,21"></polyline>
+        <polyline points="7,3 7,8 15,8"></polyline>
+      </svg>
+      Guardar
+    </button>
+  </div>
+  </form>
+</div>

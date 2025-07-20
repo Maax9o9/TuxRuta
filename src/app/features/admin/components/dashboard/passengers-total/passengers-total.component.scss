@@ -1,0 +1,128 @@
+:host {
+  display: block;
+  width: 370px;
+  max-width: 370px;
+  margin: auto;
+  padding: 1rem;
+  background-color: #212121;
+  border: 1px solid #b2f5a5;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+canvas {
+  width: 350px !important;
+  height: 220px !important;
+  max-width: 100%;
+  display: block !important;
+  visibility: visible !important;
+}
+
+h2.chart-title {
+  font-size: 1.2rem;
+  color: #ffffffcc;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.2rem;
+  color: #ffffffcc;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+p {
+  color: #ffffffcc;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 220px;
+  padding: 0.3rem 0;
+}
+
+.summary {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summary-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    
+    .label {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    
+    .value {
+      font-size: 1rem;
+      color: #1e293b;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  :host {
+    max-width: 100%;
+    padding: 0.6rem;
+  }
+  
+  canvas {
+    width: 100% !important;
+    height: 180px !important;
+  }
+  
+  .chart-container {
+    min-height: 180px;
+  }
+  
+  .summary-info {
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    .info-item {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  canvas {
+    height: 160px !important;
+  }
+  
+  .chart-container {
+    min-height: 160px;
+  }
+  
+  h3 {
+    font-size: 1rem;
+  }
+}

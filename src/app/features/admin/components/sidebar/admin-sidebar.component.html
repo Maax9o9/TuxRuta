@@ -1,0 +1,98 @@
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <img src="/Logo_TuxRuta.png" alt="TuxRuta Logo" class="sidebar-logo">
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          [class.active]="isActiveRoute('/admin/dashboard')"
+          (click)="navigateTo('/admin/dashboard')">
+          <i class="nav-icon dashboard-icon"></i>
+          <span class="nav-text">Dashboard</span>
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          [class.active]="isActiveRoute('/admin/metricas')"
+          (click)="toggleMetricas()">
+          <i class="nav-icon metrics-icon"></i>
+          <span class="nav-text">Métricas</span>
+          <i class="nav-arrow" [class.expanded]="isMetricasExpanded">▼</i>
+        </button>
+        
+        <!-- Submenu for Métricas -->
+        <ul class="submenu" [class.expanded]="isMetricasExpanded">
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/metrics/high-occupancy')"
+              (click)="onSubmenuItemClick('Alta Ocupación')">
+              <span class="submenu-text">Alta Ocupación</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/metrics/normal-distribution')"
+              (click)="onSubmenuItemClick('Distribución Normal')">
+              <span class="submenu-text">Distribución Normal</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/metrics/confidence-interval')"
+              (click)="onSubmenuItemClick('Intervalo de Confianza')">
+              <span class="submenu-text">Intervalo de Confianza</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/metrics/passengers-total')"
+              (click)="onSubmenuItemClick('Total de Pasajeros')">
+              <span class="submenu-text">Total de Pasajeros</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/metrics/rush-hour')"
+              (click)="onSubmenuItemClick('Horas Pico')">
+              <span class="submenu-text">Horas Pico</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/metrics/travel-average')"
+              (click)="onSubmenuItemClick('Promedio de Viaje')">
+              <span class="submenu-text">Promedio de Viaje</span>
+            </button>
+          </li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          [class.active]="isActiveRoute('/admin/add-routes')"
+          (click)="navigateTo('/admin/add-routes')">
+          <i class="nav-icon routes-icon"></i>
+          <span class="nav-text">Rutas</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+<div class="sidebar-footer">
+  <button class="logout-button" (click)="logout()">
+    <fa-icon [icon]="faRightFromBracket"></fa-icon>
+  </button>
+</div>
+

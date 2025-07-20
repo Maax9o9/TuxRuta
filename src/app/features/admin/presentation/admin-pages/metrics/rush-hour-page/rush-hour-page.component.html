@@ -1,0 +1,23 @@
+<div class="rush-hour-page-container">
+  <div class="overlay"></div>
+  <div class="content-wrapper">
+    
+    <div class="page-layout">
+      <!-- Filtros en la izquierda -->
+      <div class="filters-section">
+        <app-metrics-filter 
+          title="Filtros de Horas Pico"
+          [initialFilterData]="initialFilterData"
+          (filterChange)="onFilterChange($event)">
+        </app-metrics-filter>
+      </div>
+
+      <!-- Gráfica en la derecha -->
+      <div class="chart-section">
+        <div class="chart-wrapper">
+          <app-rush-hour></app-rush-hour>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

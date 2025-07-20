@@ -1,0 +1,13 @@
+<div class="citizen-map-container">
+  <!-- Map takes full space -->
+  <google-map 
+    #mapElement
+    height="100%"
+    width="100%"
+    [center]="center"
+    [zoom]="zoom"
+    [options]="mapOptions"
+    (mapReady)="onMapReady($event)"
+    (mapInitialized)="onMapInitialized($event)">
+  </google-map>
+</div>

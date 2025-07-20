@@ -1,0 +1,23 @@
+<div class="travel-promedy-page-container">
+  <div class="overlay"></div>
+  <div class="content-wrapper">
+    
+    <div class="page-layout">
+      <!-- Filtros en la izquierda -->
+      <div class="filters-section">
+        <app-metrics-filter 
+          title="Filtros de Promedio de Viaje"
+          [initialFilterData]="initialFilterData"
+          (filterChange)="onFilterChange($event)">
+        </app-metrics-filter>
+      </div>
+
+      <!-- Gráfica en la derecha -->
+      <div class="chart-section">
+        <div class="chart-wrapper">
+          <app-travel-promedy></app-travel-promedy>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
