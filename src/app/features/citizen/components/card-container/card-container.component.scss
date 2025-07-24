@@ -1,7 +1,8 @@
 :host {
   display: block;
   width: 100%;
-  background-color: #000;
+  height: 100%;
+  background-color: #212121;
   font-family: 'Poppins', sans-serif;
   
   overflow: hidden;
@@ -50,9 +51,16 @@
   margin-bottom: 1rem; 
   font-family: 'Poppins', sans-serif;
   font-weight: 400; 
+  transition: 0.3s ease;
 
   &:last-child {
     margin-bottom: 3rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(167, 201, 87, 0.2);
+    border-color: #A7C957;
   }
 
   .top-row {

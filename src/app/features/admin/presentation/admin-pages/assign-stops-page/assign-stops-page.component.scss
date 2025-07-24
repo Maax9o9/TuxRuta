@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+.assign-stops-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #212121;
+  font-family: 'Poppins', sans-serif;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #A7C957;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .separator {
+    height: 2px;
+    background: linear-gradient(90deg, #A7C957 0%, #6A994E 50%, #386641 100%);
+    margin: 0 0 1rem 0;
+    border: none;
+    padding: 0;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+app-stop-map {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 150px); 
+  overflow: hidden;
+}
+
+
+}
+
+@media (max-width: 768px) {
+  .assign-stops-page {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    app-stop-map {
+      height: calc(100vh - 80px);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .assign-stops-page {
+    padding: 0.8rem;
+
+    h1 {
+      font-size: 1.3rem;
+    }
+
+    app-stop-map {
+      height: calc(100vh - 70px);
+    }
+  }
+}

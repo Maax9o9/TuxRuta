@@ -1,0 +1,23 @@
+<div class="create-stop-modal-backdrop">
+  <div class="create-stop-modal-container">
+    <button class="close-button" (click)="onCancel()">×</button>
+
+    <h2>Nombre de la parada</h2>
+    <p class="subtitle">Puede ser alguna referencia cercana o nombre de<br>una calle o avenida</p>
+
+    <form [formGroup]="stopForm" (ngSubmit)="onSave()">
+      <label for="stopName">Nombre de la parada</label>
+      <input
+        id="stopName"
+        type="text"
+        formControlName="stopName"
+        placeholder="ejemplo: 9va sur, entre hospital regional"
+      />
+
+      <div class="button-group">
+        <button type="button" class="cancel-btn" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="save-btn">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>

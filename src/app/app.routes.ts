@@ -22,6 +22,22 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/presentation/admin-pages/add-routes-page/add-routes-page').then(m => m.AddRoutesPageComponent)
       },
       {
+        path: 'assign-stops',
+        loadComponent: () => import('./features/admin/presentation/admin-pages/assign-stops-page/assign-stops-page.component').then(m => m.AssignStopsPageComponent)
+      },
+      {
+        path: 'add-colectives',
+        loadComponent: () => import('./features/admin/presentation/admin-pages/add-colectives-page/add-colectives-page.component').then(m => m.AddColectivesPageComponent)
+      },
+      {
+        path: 'colective-table',
+        loadComponent: () => import('./features/admin/presentation/admin-pages/tables/colective-table-page/colective-table-page.component').then(m => m.ColectiveTablePageComponent)
+      },
+      {
+        path: 'routes-table',
+        loadComponent: () => import('./features/admin/presentation/admin-pages/tables/route-table-page/route-table-page.component').then(m => m.RouteTablePageComponent)
+      },
+      {
         path: 'metrics/confidence-interval',
         loadComponent: () => import('./features/admin/presentation/admin-pages/metrics/confidence-interval-page/confidence-interval-page.component').then(m => m.ConfidenceIntervalPageComponent)
       },

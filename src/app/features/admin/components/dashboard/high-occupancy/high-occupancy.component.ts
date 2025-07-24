@@ -2,8 +2,8 @@ import { Component, Inject, PLATFORM_ID, AfterViewInit, ViewChild, ChangeDetecto
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, Chart } from 'chart.js';
-import { GetAllDailyResumeUseCase } from '../../../domain/get-all-daily-resume-use-case';
-import { GetAllMonthlyResumeUseCase } from '../../../domain/get-all-monthly-comparative';
+import { GetAllDailyResumeUseCase } from '../../../domain/daily-resume/get-all-daily-resume-use-case';
+import { GetAllMonthlyResumeUseCase } from '../../../domain/monthly-resume/get-all-monthly-comparative';
 import { DailyResumeRepository } from '../../../data/repository/daily-resume-repository';
 import { MonthlyResumeRepository } from '../../../data/repository/monthly-resume-repository';
 import { DailyResume } from '../../../data/models/daily-resume-route.model';

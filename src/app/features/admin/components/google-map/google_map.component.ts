@@ -39,7 +39,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   zoom = 15;
   center: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
   
-  // Estilo oscuro personalizado para el mapa
   darkModeStyle = [
     { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
     { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
@@ -128,11 +127,11 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     mapTypeControl: false,
     fullscreenControl: false,
     styles: this.darkModeStyle,
-    mapId: 'DEMO_MAP_ID', // Usar mapId más estándar para Advanced Markers
-    draggable: true, // Permitir arrastrar
-    scrollwheel: true, // Permitir zoom con scroll
-    disableDoubleClickZoom: false, // Permitir zoom con doble clic
-    gestureHandling: 'auto', // Gestión automática de gestos
+    mapId: 'DEMO_MAP_ID', 
+    draggable: true, 
+    scrollwheel: true, 
+    disableDoubleClickZoom: false, 
+    gestureHandling: 'auto', 
     clickableIcons: true,
     keyboardShortcuts: true
   };
@@ -144,10 +143,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   private advancedMarker?: google.maps.marker.AdvancedMarkerElement;
   private subscription?: Subscription;
   
-  // Propiedades para la creación de rutas
   public isRouteCreationMode = false;
   public routePoints: google.maps.LatLngLiteral[] = [];
-  public hasValidRoute = false; // Nueva propiedad para verificar si hay una ruta válida
+  public hasValidRoute = false; 
   private routeMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
   private directionsService!: google.maps.DirectionsService;
   private directionsRenderer!: google.maps.DirectionsRenderer;
@@ -180,7 +178,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
       
-      // Verificar la inicialización del mapa después de un tiempo
       setTimeout(() => {
         if (!this.mapInstance) {
           console.error('Mapa no inicializado después de 3 segundos');
@@ -188,11 +185,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }, 3000);
 
-      // Exponer método global para obtener puntos de la ruta
       (window as any).getRoutePoints = () => this.getRoutePoints();
       (window as any).getFormattedRoutePoints = () => this.getFormattedRoutePoints();
       
-      // Exponer método global para limpiar la ruta
       (window as any).clearRouteFromMap = () => this.clearRoute();
     }
   }
@@ -201,7 +196,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('ngAfterViewInit llamado');
     
     if (this.isBrowser) {
-      // Usar setTimeout para evitar ExpressionChangedAfterItHasBeenCheckedError
       setTimeout(() => {
         this.initializeMapFallback();
       }, 0);
@@ -209,7 +203,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private initializeMapFallback(): void {
-    // Intentar múltiples veces hasta que el mapa se inicialice
     let attempts = 0;
     const maxAttempts = 10;
     

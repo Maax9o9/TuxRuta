@@ -1,0 +1,31 @@
+<div class="route-table-wrapper">
+  <table class="route-table">
+    <thead>
+      <tr>
+        <th>Ruta</th>
+        <th>Paradas</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of rutas; let i = index">
+        <td>{{ item.nombre }}</td>
+        <td>{{ item.paradas }}</td>
+        <td>
+          <img
+            src="delete.png"
+            alt="Eliminar"
+            class="delete-icon"
+            (click)="eliminar(i)"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-actions-right">
+    <button class="btn btn-primary" [routerLink]="['/admin/assign-stops']">
+      Asignar parada
+      <img src="bus-stopV.png" alt="icono" style="width:20px;height:20px;" />
+    </button>
+  </div>
+</div>

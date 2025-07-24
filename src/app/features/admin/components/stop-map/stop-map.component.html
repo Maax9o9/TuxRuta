@@ -1,0 +1,20 @@
+<ng-container *ngIf="isBrowser">
+  <div class="google-map-container">
+    <google-map
+      #mapElement
+      [height]="'100%'"
+      [width]="'100%'"
+      [center]="center"
+      [zoom]="zoom"
+      [options]="mapOptions"
+      (mapReady)="onMapReady($event)"
+    ></google-map>
+
+    <div class="map-buttons">
+      <button class="stop-btn undo-btn" (click)="removeLastStop()">Eliminar Último</button>
+      <button class="stop-btn clear-btn" (click)="clearAllStops()">Limpiar</button>
+    </div>
+  </div>
+
+  <app-create-stop-form *ngIf="showStopForm" (close)="onCloseStopForm()" />
+</ng-container>

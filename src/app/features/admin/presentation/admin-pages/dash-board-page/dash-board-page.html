@@ -1,65 +1,36 @@
-<div class="dashboard-page-container">
-  <div class="overlay"></div>
-  <div class="content-wrapper">
-    
-    <div class="filters-section">
-      <h2>Filtros de Dashboard</h2>
-      <div class="filters-container">
-        
-        <div class="filter-group">
-          <label for="filterType">Tipo de Filtro:</label>
-          <select id="filterType" [(ngModel)]="filterType" (change)="onFilterTypeChange()" class="filter-select">
-            <option value="month">Por Mes</option>
-            <option value="week">Por Semana</option>
-          </select>
-        </div>
+<div class="dashboard-top-bar">
+  <span class="title">Dashboard</span>
+  <span class="welcome">Bienvenido (Nombre de Usuario)</span>
+</div>
+<div class="separator"></div>
 
-        <div class="filter-group" *ngIf="filterType === 'month'">
-          <label for="yearSelect">Año:</label>
-          <select id="yearSelect" [(ngModel)]="selectedYear" (change)="onYearChange()" class="filter-select">
-            <option *ngFor="let year of availableYears" [value]="year">{{year}}</option>
-          </select>
-        </div>
-
-        <div class="filter-group" *ngIf="filterType === 'month'">
-          <label for="monthSelect">Mes:</label>
-          <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="onMonthChange()" class="filter-select">
-            <option *ngFor="let month of availableMonths" [value]="month.value">{{month.name}}</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="routeSelect">Ruta:</label>
-          <select id="routeSelect" [(ngModel)]="selectedRoute" (change)="onRouteChange()" class="filter-select">
-            <option *ngFor="let route of availableRoutes" [value]="route.id">{{route.name}}</option>
-          </select>
-        </div>
-
-        <div class="filter-description">
-          <span>{{getFilterDescription()}}</span>
-        </div>
-      </div>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <span>Métricas</span>
+      <span class="arrow">➤</span>
     </div>
+    <div class="time-display">{{ currentTime }}</div>
+  </div>
 
-    <div class="charts-grid">
-      <div class="chart-wrapper">
-        <app-normal-distribution></app-normal-distribution>
-      </div>
-      <div class="chart-wrapper">
-        <app-high-occupancy></app-high-occupancy>
-      </div>
-      <div class="chart-wrapper">
-        <app-confidence-interval></app-confidence-interval>
-      </div>
-      <div class="chart-wrapper">
-        <app-passengers-total></app-passengers-total>
-      </div>
-      <div class="chart-wrapper">
-        <app-rush-hour></app-rush-hour>
-      </div>
-      <div class="chart-wrapper">
-        <app-travel-promedy></app-travel-promedy>
-      </div>
+  <div class="cards-grid">
+    <div class="card" *ngFor="let metric of metrics">
+      <span class="card-title">{{ metric.title }}</span>
+      <span class="card-value">{{ metric.value }}</span>
+      <span class="card-subtitle">{{ metric.subtitle }}</span>
+    </div>
+  </div>
+
+  <div class="quick-actions-section">
+    <h3 class="section-title">Accesos Rápidos</h3>
+    <div class="actions-grid">
+      <a class="action-card" *ngFor="let action of quickActions" [routerLink]="action.route">
+        <div class="action-content">
+          <span class="action-title">{{ action.title }}</span>
+          <span class="action-description">{{ action.description }}</span>
+        </div>
+        <div class="action-arrow">→</div>
+      </a>
     </div>
   </div>
 </div>

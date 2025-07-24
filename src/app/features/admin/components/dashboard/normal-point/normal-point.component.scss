@@ -1,7 +1,7 @@
 :host {
   display: block;
-  width: 370px;
-  max-width: 370px;
+  width: 290px;
+  max-width: 290px;
   margin: auto;
   padding: 1rem;
   background-color: #212121;
@@ -13,11 +13,11 @@
 }
 
 canvas {
-  width: 350px !important;
-  height: 230px !important;
-  max-width: 100%;
+  width: 270px !important;
+  height: 210px !important;
   display: block !important;
   visibility: visible !important;
+  position: relative !important;
 }
 
 h2.chart-title {

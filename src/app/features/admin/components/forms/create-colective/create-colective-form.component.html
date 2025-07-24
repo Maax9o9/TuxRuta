@@ -1,0 +1,58 @@
+<form [formGroup]="colectiveForm" (ngSubmit)="onSubmit()" class="create-route-form-container route-form">
+  <div class="messages-container" *ngIf="alertVisible">
+    <div class="alert" [ngClass]="'alert-' + getAlertType()">
+      <div class="alert-icon">
+        <svg *ngIf="getAlertType() === 'warning'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+      </div>
+      <div class="alert-content">
+        <h4>Paso 1: Completar el formulario</h4>
+        <p>Completa el formulario y asigne rutas para poder crear el colectivo</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group form-col">
+      <label for="matricula" class="form-label">Matricula</label>
+      <input 
+        type="text" 
+        id="matricula" 
+        formControlName="matricula"
+        class="form-input"
+        (input)="clearMessages()"
+      >
+    </div>
+
+    <div class="form-group form-col">
+      <label for="ruta" class="form-label">Rutas</label>
+      <select id="ruta" formControlName="ruta" class="form-input" (change)="clearMessages()">
+        <option value="">Seleccionar ruta</option>
+        <option value="ruta1">Ruta 1</option>
+        <option value="ruta2">Ruta 2</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="activo" class="form-label">Activo/Desactivado</label>
+    <label class="switch">
+      <input type="checkbox" id="activo" formControlName="activo">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="form-actions-right">
+
+    <button type="submit" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+        <polyline points="17,21 17,13 7,13 7,21"></polyline>
+        <polyline points="7,3 7,8 15,8"></polyline>
+      </svg>
+      Guardar
+    </button>
+  </div>
+
+</form>

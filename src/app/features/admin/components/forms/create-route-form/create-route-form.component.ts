@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CreateRouteUseCase } from '../../../domain/create-route-use-case';
+import { CreateRouteUseCase } from '../../../domain/route/create-route-use-case';
 import { Route, RoutePoint } from '../../../data/models/route.model';
 
 @Component({

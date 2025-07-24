@@ -1,9 +1,10 @@
+// ...existing code...
 import { Component, Inject, PLATFORM_ID, AfterViewInit, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
-import { GetAllDailyResumeUseCase } from '../../../domain/get-all-daily-resume-use-case';
-import { GetAllMonthlyResumeUseCase } from '../../../domain/get-all-monthly-comparative';
+import { GetAllDailyResumeUseCase } from '../../../domain/daily-resume/get-all-daily-resume-use-case';
+import { GetAllMonthlyResumeUseCase } from '../../../domain/monthly-resume/get-all-monthly-comparative';
 import { DailyResumeRepository } from '../../../data/repository/daily-resume-repository';
 import { MonthlyResumeRepository } from '../../../data/repository/monthly-resume-repository';
 import { DailyResume } from '../../../data/models/daily-resume-route.model';
@@ -18,6 +19,35 @@ import { MonthlyResume } from '../../../data/models/monthly-comparative.model';
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ConfidenceIntervalComponent implements AfterViewInit {
+  // Opciones de fallback para asegurar que el eje Y siempre se muestre correctamente
+  public confidenceIntervalChartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Muestra'
+        }
+      },
+      y: {
+        display: true,
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Límites de confianza'
+        },
+        ticks: {
+          precision: 2
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true
+      }
+    }
+  };
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   chartType: 'line' = 'line';
@@ -110,9 +140,9 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
     const lowerBounds = this.dailyResumeData.map(d => d.intervalo_confianza_velocidad_min);
     const averageSpeed = this.dailyResumeData.map(d => d.velocidad_promedio);
 
-    // Crear separación artificial fija - valores consistentes
-    const adjustedUpperBounds = upperBounds.map(val => val + 12); // +12 km/h más arriba
-    const adjustedLowerBounds = lowerBounds.map(val => val - 12); // -12 km/h más abajo
+    // Crear separación artificial más notoria
+    const adjustedUpperBounds = upperBounds.map(val => val + 18); // +18 km/h más arriba
+    const adjustedLowerBounds = lowerBounds.map(val => val - 18); // -18 km/h más abajo
 
     // Calculate optimal Y-axis scale based on all data points
     const allDataPoints = [...adjustedUpperBounds, ...adjustedLowerBounds, ...averageSpeed];
@@ -126,27 +156,27 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
           data: adjustedUpperBounds,
           borderColor: '#386641',
           backgroundColor: 'rgba(56, 102, 65, 0.1)',
-          pointRadius: 4,
+          pointRadius: 5,
           pointBackgroundColor: '#386641',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           fill: false,
           tension: 0.3,
           borderWidth: 3,
-          borderDash: [8, 4],
+          borderDash: [14, 6],
         },
         {
           label: 'Velocidad Promedio',
           data: averageSpeed,
           borderColor: '#6A994E',
           backgroundColor: 'rgba(106, 153, 78, 0.2)',
-          pointRadius: 5,
+          pointRadius: 6,
           pointBackgroundColor: '#6A994E',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           fill: false,
           tension: 0.3,
-          borderWidth: 4,
+          borderWidth: 3,
           borderDash: [], // Solid line
         },
         {
@@ -154,14 +184,14 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
           data: adjustedLowerBounds,
           borderColor: '#7BAD61',
           backgroundColor: 'rgba(123, 173, 97, 0.1)',
-          pointRadius: 4,
+          pointRadius: 5,
           pointBackgroundColor: '#7BAD61',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           fill: false,
           tension: 0.3,
           borderWidth: 3,
-          borderDash: [8, 4],
+          borderDash: [14, 6],
         }
       ]
     };
@@ -200,22 +230,29 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
             display: true,
             text: 'Velocidad (km/h)',
             font: {
-              size: 12,
-              weight: 'bold'
+              size: 16,
+              weight: 'bold',
+              family: 'Poppins',
             },
-            color: 'rgba(180, 245, 165, 0.9)'
+            color: '#A7C957',
+            padding: { top: 10, bottom: 10 }
           },
           grid: {
             display: true,
-            color: 'rgba(180, 245, 165, 0.3)',
-            lineWidth: 1
+            color: '#A7C957',
+            lineWidth: 2,
           },
-          // Usar suggestedMin/Max en lugar de min/max fijo para más flexibilidad
-          suggestedMin: 10,
-          suggestedMax: 100,
+          min: yScale.min,
+          max: yScale.max,
           ticks: {
-            stepSize: 5,
-            color: 'rgba(180, 245, 165, 0.8)'
+            stepSize: 2,
+            color: '#A7C957',
+            font: {
+              size: 14,
+              weight: 'bold',
+              family: 'Poppins',
+            },
+            padding: 6
           }
         },
       },
@@ -303,6 +340,22 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
     const adjustedUpperBounds = upperBounds.map(val => val + 12); // +12 km/h más arriba
     const adjustedLowerBounds = lowerBounds.map(val => val - 12); // -12 km/h más abajo
 
+    // Calcular escala Y óptima para los datos de prueba
+    const allDataPoints = [...adjustedUpperBounds, ...adjustedLowerBounds, ...averageSpeed];
+    const yScale = this.calculateOptimalYScale(allDataPoints);
+
+    // Forzar destrucción y recreación del chart para evitar bugs de renderizado
+    if (this.chart) {
+      this.chart.chart?.destroy();
+      this.chartData = undefined as any;
+      this.chartOptions = undefined as any;
+      this.cdr.detectChanges();
+      // Esperar un ciclo para asegurar el DOM se limpia
+      setTimeout(() => {
+        this.cdr.detectChanges();
+      }, 10);
+    }
+
     this.chartData = {
       labels,
       datasets: [
@@ -395,11 +448,10 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
             color: 'rgba(180, 245, 165, 0.3)',
             lineWidth: 1
           },
-          // Usar suggestedMin/Max en lugar de min/max fijo para más flexibilidad
-          suggestedMin: 10,
-          suggestedMax: 100,
+          min: yScale.min,
+          max: yScale.max,
           ticks: {
-            stepSize: 5,
+            stepSize: 2,
             color: 'rgba(180, 245, 165, 0.8)'
           }
         },
@@ -580,6 +632,10 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
     const adjustedUpperBounds = upperBounds.map(val => val + 12); // +12 km/h más arriba
     const adjustedLowerBounds = lowerBounds.map(val => val - 12); // -12 km/h más abajo
 
+    // Calcular escala Y óptima para los datos mensuales
+    const allDataPoints = [...adjustedUpperBounds, ...adjustedLowerBounds, ...speedData];
+    const yScale = this.calculateOptimalYScale(allDataPoints);
+
     this.chartData = {
       labels: monthNames,
       datasets: [
@@ -672,11 +728,10 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
             color: 'rgba(180, 245, 165, 0.3)',
             lineWidth: 1
           },
-          // Usar suggestedMin/Max en lugar de min/max fijo para más flexibilidad
-          suggestedMin: 10,
-          suggestedMax: 100,
+          min: yScale.min,
+          max: yScale.max,
           ticks: {
-            stepSize: 5,
+            stepSize: 2,
             color: 'rgba(180, 245, 165, 0.8)'
           }
         },

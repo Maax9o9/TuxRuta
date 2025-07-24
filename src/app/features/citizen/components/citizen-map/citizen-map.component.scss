@@ -1,7 +1,7 @@
 .citizen-map-container {
   position: relative;
   width: 100%;
-  height: 100vh; // Ocupar toda la altura de la ventana
+  height: 100%; // Ocupar toda la altura de la ventana
   display: flex;
   flex-direction: column;
   background-color: #1a1a1a;
@@ -9,15 +9,13 @@
   overflow: hidden;
   box-shadow: none; // Sin sombra para ocupar todo el espacio
 
-  // Map takes full space
   google-map {
     width: 100% !important;
     height: 100% !important;
     flex: 1;
-    border-radius: 0; // Sin bordes redondeados
+    border-radius: 0; 
     z-index: 1;
     
-    // Force internal map container to have correct dimensions
     > div {
       width: 100% !important;
       height: 100% !important;

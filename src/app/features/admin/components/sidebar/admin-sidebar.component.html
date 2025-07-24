@@ -84,8 +84,47 @@
           [class.active]="isActiveRoute('/admin/add-routes')"
           (click)="navigateTo('/admin/add-routes')">
           <i class="nav-icon routes-icon"></i>
-          <span class="nav-text">Rutas</span>
+          <span class="nav-text">Crear Rutas</span>
         </button>
+      </li>
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          [class.active]="isActiveRoute('/admin/add-colectives')"
+          (click)="navigateTo('/admin/add-colectives')">
+          <i class="nav-icon"></i>
+          <span class="nav-text">Crear Colectivos</span>
+        </button>
+      </li>
+
+      <!-- Mini menú Tablas -->
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          [class.active]="isTablasExpanded"
+          (click)="toggleTablas()">
+          <i class="nav-icon"></i>
+          <span class="nav-text">Tablas</span>
+          <i class="nav-arrow" [class.expanded]="isTablasExpanded">▼</i>
+        </button>
+        <ul class="submenu" [class.expanded]="isTablasExpanded">
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/colective-table')"
+              (click)="navigateTo('/admin/colective-table')">
+              <span class="submenu-text">Tabla de Colectivos</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button 
+              class="submenu-button"
+              [class.active]="isActiveRoute('/admin/routes-table')"
+              (click)="navigateTo('/admin/routes-table')">
+              <span class="submenu-text">Tabla de Rutas</span>
+            </button>
+          </li>
+        </ul>
       </li>
     </ul>
   </nav>
