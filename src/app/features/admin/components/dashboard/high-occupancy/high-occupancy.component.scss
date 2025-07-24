@@ -1,3 +1,31 @@
+.summary-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(167, 201, 87, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.info-item .label {
+  font-size: 0.8rem;
+  color: #ffffffcc;
+  font-weight: 500;
+}
+
+.info-item .value {
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 600;
+}
 :host {
   display: block;
   width: 290px;
@@ -13,9 +41,12 @@
 }
 
 canvas {
-  width: 270px !important;
-  height: 210px !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 270px;
+  max-height: 210px;
   display: block !important;
+  margin: auto;
   visibility: visible !important;
   position: relative !important;
 }
@@ -46,10 +77,12 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 270px;
+  width: 100%;
+  max-width: 270px;
   height: 210px;
   margin: 0 auto;
   position: relative;
+  padding: 0.5rem 0;
 }
 
 .summary {
@@ -73,11 +106,11 @@ p {
   }
   
   &.high .indicator {
-    background-color: #E63946;
+    background-color: #386641;
   }
   
   &.normal .indicator {
-    background-color: #2A9D8F;
+    background-color: #6A994E;
   }
   
   .label {

@@ -14,6 +14,7 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 export class AdminSidebarComponent {
   currentRoute: string = '';
   isMetricasExpanded: boolean = false;
+  isTablasExpanded: boolean = false;
 
   faRightFromBracket = faRightFromBracket;
 
@@ -38,6 +39,10 @@ export class AdminSidebarComponent {
 
   toggleMetricas(): void {
     this.isMetricasExpanded = !this.isMetricasExpanded;
+  }
+
+  toggleTablas(): void {
+    this.isTablasExpanded = !this.isTablasExpanded;
   }
 
   onSubmenuItemClick(option: string): void {
