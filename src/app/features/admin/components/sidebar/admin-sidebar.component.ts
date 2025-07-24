@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { AdminUserRepository } from '../../data/repository/admin-user-repository';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -18,12 +19,11 @@ export class AdminSidebarComponent {
 
   faRightFromBracket = faRightFromBracket;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private adminUserRepository: AdminUserRepository) {
     this.currentRoute = this.router.url;
   }
 
   navigateTo(route: string): void {
-    // Temporary handling for metrics routes until they are created
     if (route.includes('/admin/metricas/')) {
       console.log(`Navegando a: ${route} (Ruta pendiente por crear)`);
       return;
@@ -65,17 +65,17 @@ export class AdminSidebarComponent {
         route === '/admin/metrics/passengers-total' ||
         route === '/admin/metrics/rush-hour' ||
         route === '/admin/metrics/travel-average') {
-      // Todas las páginas de métricas ya están implementadas
       this.router.navigate([route]);
       this.currentRoute = route;
     } else {
-      // Esto ya no debería ocurrir, pero lo mantenemos por seguridad
       console.log(`Página para ${option} aún no implementada. Ruta: ${route}`);
     }
   }
 
   logout(): void {
-    console.log('Cerrar sesión');
-    this.router.navigate(['/new-login']); 
+    this.adminUserRepository.removeToken();
+    this.adminUserRepository.removeUser();
+    localStorage.clear(); 
+    this.router.navigate(['/new-login']);
   }
 }

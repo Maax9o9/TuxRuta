@@ -17,10 +17,7 @@ import {
   isPlatformBrowser
 } from '@angular/common';
 import { GoogleMapsModule, GoogleMap } from '@angular/google-maps';
-import { GetRealTimeLocationUseCase } from '../../domain/get-real-time-location-use-case';
-import { GenerateRealTimeLocationUseCase } from '../../domain/generate-real-time-location-use-case';
-import { ColectiveLocation } from '../../data/models/colective-location.model';
-import { RoutePoint } from '../../data/models/route.model';
+import { Point } from '../../data/models/route.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -37,7 +34,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isBrowser = false;
   zoom = 15;
-  center: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
+  center: google.maps.LatLngLiteral = { lat: 16.7549, lng: -93.1292 }; // Ejemplo: Tuxtla Gutiérrez
   
   darkModeStyle = [
     { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
@@ -126,14 +123,13 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     streetViewControl: false,
     mapTypeControl: false,
     fullscreenControl: false,
-    styles: this.darkModeStyle,
-    mapId: 'DEMO_MAP_ID', 
-    draggable: true, 
-    scrollwheel: true, 
-    disableDoubleClickZoom: false, 
-    gestureHandling: 'auto', 
+    mapId: 'DEMO_MAP_ID',
+    draggable: true,
+    scrollwheel: true,
+    disableDoubleClickZoom: false,
+    gestureHandling: 'auto',
     clickableIcons: true,
-    keyboardShortcuts: true
+    keyboardShortcuts: true,
   };
 
   @ViewChild('mapRef', { static: false }) mapRef!: ElementRef;
@@ -144,7 +140,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscription?: Subscription;
   
   public isRouteCreationMode = false;
-  public routePoints: google.maps.LatLngLiteral[] = [];
+  public path_data: Point[] = [];
   public hasValidRoute = false; 
   private routeMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
   private directionsService!: google.maps.DirectionsService;
@@ -155,8 +151,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private getRealTimeLocationUseCase: GetRealTimeLocationUseCase,
-    private generateRealTimeLocationUseCase: GenerateRealTimeLocationUseCase,
+
     private cdr: ChangeDetectorRef
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -164,30 +159,14 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      this.subscription = this.generateRealTimeLocationUseCase.execute().subscribe((loc: ColectiveLocation) => {
-        this.center = { lat: loc.latitud, lng: loc.longitud };
-
-        if (this.mapInstance) {
-          this.mapInstance.setCenter(this.center);
-
-          if (this.advancedMarker) {
-            this.advancedMarker.position = this.center;
-          } else {
-            this.addMarker();
-          }
-        }
-      });
-      
       setTimeout(() => {
         if (!this.mapInstance) {
           console.error('Mapa no inicializado después de 3 segundos');
           this.checkMapInitialization();
         }
       }, 3000);
-
       (window as any).getRoutePoints = () => this.getRoutePoints();
       (window as any).getFormattedRoutePoints = () => this.getFormattedRoutePoints();
-      
       (window as any).clearRouteFromMap = () => this.clearRoute();
     }
   }
@@ -244,7 +223,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
         ...this.mapOptions,
         center: this.center,
         zoom: this.zoom,
-        mapId: 'baefa76acca7ca22e8d2ba2e' // Required for Advanced Markers
+        mapId: 'baefa76acca7ca22e8d2ba2e' 
       });
       
       this.mapInitialized = true;
@@ -265,7 +244,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
           this.addMarker();
           this.initializeRouteServices();
           
-          // Check if route creation mode was pending
           if (this.pendingRouteCreationMode) {
             this.pendingRouteCreationMode = false;
             this.isRouteCreationMode = true;
@@ -501,18 +479,15 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error('❌ Mapa no inicializado');
       return;
     }
-    
-    const point = { lat: latLng.lat(), lng: latLng.lng() };
-    this.routePoints.push(point);
-    console.log('✅ Punto agregado. Total:', this.routePoints.length);
-    
+    const point: Point = { lat: latLng.lat(), lng: latLng.lng(), order: this.path_data.length + 1 };
+    this.path_data.push(point);
+    console.log('✅ Punto agregado. Total:', this.path_data.length);
     // Crear marcador para el punto
-    const marker = this.createRouteMarker(point, this.routePoints.length);
+    const marker = this.createRouteMarker(point, this.path_data.length);
     this.routeMarkers.push(marker);
-    
     // Si tenemos al menos 2 puntos, calcular la ruta
-    if (this.routePoints.length >= 2) {
-      console.log('🛣️ Calculando ruta con', this.routePoints.length, 'puntos');
+    if (this.path_data.length >= 2) {
+      console.log('🛣️ Calculando ruta con', this.path_data.length, 'puntos');
       this.calculateRoute();
     }
   }
@@ -538,7 +513,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       markerElement.style.cssText = `
         width: 30px !important;
         height: 30px !important;
-        background-color: ${index === 1 ? '#4CAF50' : index === this.routePoints.length ? '#f44336' : '#2196F3'} !important;
+        background-color: ${index === 1 ? '#4CAF50' : index === this.path_data.length ? '#f44336' : '#2196F3'} !important;
         border: 3px solid white !important;
         border-radius: 50% !important;
         display: flex !important;
@@ -598,17 +573,17 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Calcular ruta entre los puntos
   private calculateRoute(): void {
-    if (this.routePoints.length < 2 || !this.directionsService || !this.directionsRenderer) {
+    if (this.path_data.length < 2 || !this.directionsService || !this.directionsRenderer) {
       console.log('No se puede calcular ruta: puntos insuficientes o servicios no inicializados');
       return;
     }
     
-    console.log('Calculando ruta con puntos:', this.routePoints);
+    console.log('Calculando ruta con puntos:', this.path_data);
     
-    const origin = this.routePoints[0];
-    const destination = this.routePoints[this.routePoints.length - 1];
-    const waypoints = this.routePoints.slice(1, -1).map(point => ({
-      location: point,
+    const origin = { lat: this.path_data[0].lat, lng: this.path_data[0].lng };
+    const destination = { lat: this.path_data[this.path_data.length - 1].lat, lng: this.path_data[this.path_data.length - 1].lng };
+    const waypoints = this.path_data.slice(1, -1).map(point => ({
+      location: { lat: point.lat, lng: point.lng },
       stopover: true
     }));
     
@@ -649,7 +624,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     
     this.tempPolyline = new google.maps.Polyline({
-      path: this.routePoints,
+      path: this.path_data.map(p => ({ lat: p.lat, lng: p.lng })),
       geodesic: true,
       strokeColor: '#FF6B6B',
       strokeOpacity: 0.8,
@@ -661,20 +636,17 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Eliminar punto de la ruta
   private removeRoutePoint(index: number): void {
-    if (index >= 0 && index < this.routePoints.length) {
-      this.routePoints.splice(index, 1);
-      
+    if (index >= 0 && index < this.path_data.length) {
+      this.path_data.splice(index, 1);
       // Eliminar marcador
       if (this.routeMarkers[index]) {
         this.routeMarkers[index].map = null;
         this.routeMarkers.splice(index, 1);
       }
-      
       // Actualizar numeración de marcadores
       this.updateMarkerNumbers();
-      
       // Recalcular ruta
-      if (this.routePoints.length >= 2) {
+      if (this.path_data.length >= 2) {
         this.calculateRoute();
       } else {
         this.hasValidRoute = false;
@@ -693,11 +665,14 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.routeMarkers.forEach((marker, index) => {
       const element = marker.content as HTMLElement;
       element.textContent = (index + 1).toString();
-      
       // Actualizar color según posición
       const isStart = index === 0;
       const isEnd = index === this.routeMarkers.length - 1;
       element.style.backgroundColor = isStart ? '#4CAF50' : isEnd ? '#f44336' : '#2196F3';
+      // Actualizar order en path_data
+      if (this.path_data[index]) {
+        this.path_data[index].order = index + 1;
+      }
     });
   }
 
@@ -705,14 +680,13 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   public clearRoute(): void {
     // Use setTimeout to avoid change detection issues
     setTimeout(() => {
-      this.routePoints = [];
+      this.path_data = [];
       this.hasValidRoute = false;
       this.routeMarkers.forEach(marker => {
         marker.map = null;
       });
       this.routeMarkers = [];
       
-      // Verificar que directionsRenderer esté inicializado antes de usarlo
       if (this.directionsRenderer) {
         this.directionsRenderer.setDirections({ routes: [] } as any);
       }
@@ -722,30 +696,24 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       console.log('Ruta limpiada');
       
-      // Emitir evento de ruta limpiada
       this.routeCleared.emit();
     }, 0);
   }
 
-  // Eliminar el último marcador
   public removeLastMarker(): void {
-    if (this.routePoints.length > 0) {
-      const lastIndex = this.routePoints.length - 1;
+    if (this.path_data.length > 0) {
+      const lastIndex = this.path_data.length - 1;
       console.log('Eliminando último marcador, índice:', lastIndex);
       
-      // Use setTimeout to avoid change detection issues
       setTimeout(() => {
-        // Eliminar el último punto
-        this.routePoints.pop();
+        this.path_data.pop();
         
-        // Eliminar el último marcador
         const lastMarker = this.routeMarkers.pop();
         if (lastMarker) {
           lastMarker.map = null;
         }
-        
-        // Recalcular ruta si hay suficientes puntos
-        if (this.routePoints.length >= 2) {
+
+        if (this.path_data.length >= 2) {
           this.calculateRoute();
         } else {
           this.hasValidRoute = false;
@@ -755,32 +723,29 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
           if (this.tempPolyline) {
             this.tempPolyline.setMap(null);
           }
-          // Emitir evento de ruta limpiada si ya no hay ruta válida
           this.routeCleared.emit();
         }
         
-        console.log('Puntos restantes:', this.routePoints.length);
+        console.log('Puntos restantes:', this.path_data.length);
       }, 0);
     }
   }
 
-  // Obtener puntos de la ruta
   public getRoutePoints(): google.maps.LatLngLiteral[] {
-    return [...this.routePoints];
+    return this.path_data.map(p => ({ lat: p.lat, lng: p.lng }));
   }
 
-  // Obtener puntos de ruta en formato RoutePoint para el modelo
-  public getFormattedRoutePoints(): RoutePoint[] {
-    return this.routePoints.map((point, index) => ({
+  public getFormattedRoutePoints(): Point[] {
+    return this.path_data.map((point) => ({
       lat: point.lat,
       lng: point.lng,
-      order: index + 1
+      order: point.order
     }));
   }
 
   // Finalizar creación de ruta
   public finishRouteCreation(): void {
-    if (!this.hasValidRoute || this.routePoints.length < 2) {
+    if (!this.hasValidRoute || this.path_data.length < 2) {
       console.error('No se puede finalizar: no hay una ruta válida trazada');
       return;
     }
@@ -788,55 +753,25 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     // Use setTimeout to avoid change detection issues
     setTimeout(() => {
       this.isRouteCreationMode = false;
-      
-      const routePoints: RoutePoint[] = this.routePoints.map((point, index) => ({
+      const path_data: Point[] = this.path_data.map((point) => ({
         lat: point.lat,
         lng: point.lng,
-        order: index + 1
+        order: point.order
       }));
-
       const routeRequest = {
         name: `Ruta ${new Date().toLocaleDateString()}`,
-        description: `Ruta creada con ${routePoints.length} puntos`,
-        points: routePoints
+        description: `Ruta creada con ${path_data.length} puntos`,
+        path_data: path_data
       };
-
       console.log('Ruta trazada exitosamente:', routeRequest);
-      console.log('Puntos de la ruta:', routePoints);
-      
+      console.log('Puntos de la ruta:', path_data);
       // Emitir evento para notificar al componente padre
       this.routeTraced.emit();
     }, 0);
   }
 
   private addMarker(): void {
-    try {
-      console.log('Añadiendo marcador en posición:', this.center);
-      
-      const icon = document.createElement('img');
-      icon.src = 'combi.png';
-      icon.style.width = '40px';
-      icon.style.height = '40px';
-      
-      // Agregar manejo de errores para la imagen
-      icon.onerror = () => {
-        console.warn('No se pudo cargar combi.png, usando marcador por defecto');
-      };
-
-      if (this.mapInstance && google.maps.marker) {
-        this.advancedMarker = new google.maps.marker.AdvancedMarkerElement({
-          map: this.mapInstance,
-          position: this.center,
-          title: 'Ubicación actual',
-          content: icon,
-        });
-        console.log('Marcador añadido exitosamente');
-      } else {
-        console.error('No se pudo crear el marcador: mapInstance o google.maps.marker no disponible');
-      }
-    } catch (error) {
-      console.error('Error al añadir marcador:', error);
-    }
+    // Ya no se agrega ningún marcador de combi ni icono, solo rutas
   }
 
   ngOnDestroy(): void {

@@ -13,16 +13,14 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () => import('./features/admin/presentation/admin-pages/dash-board-page/dash-board-page').then(m => m.DashboardPageComponent)
       },
-      // {
-      //   path: 'metricas',
-      //   loadComponent: () => import('./features/admin/presentation/admin-pages/metricas-page/metricas-page').then(m => m.MetricasPageComponent)
-      // },
+
       {
         path: 'add-routes',
         loadComponent: () => import('./features/admin/presentation/admin-pages/add-routes-page/add-routes-page').then(m => m.AddRoutesPageComponent)
       },
+
       {
-        path: 'assign-stops',
+        path: 'assign-stops/:id',
         loadComponent: () => import('./features/admin/presentation/admin-pages/assign-stops-page/assign-stops-page.component').then(m => m.AssignStopsPageComponent)
       },
       {

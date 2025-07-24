@@ -8,24 +8,26 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of rutas; let i = index">
-        <td>{{ item.nombre }}</td>
-        <td>{{ item.paradas }}</td>
-        <td>
+      <tr *ngFor="let item of rutas; let i = index"
+          (click)="seleccionar(i)">
+        <td [class.selected-cell]="selectedIndex === i">{{ item.nombre }}</td>
+        <td [class.selected-cell]="selectedIndex === i">{{ item.points?.length || 0 }}</td>
+        <td [class.selected-cell]="selectedIndex === i">
           <img
             src="delete.png"
             alt="Eliminar"
             class="delete-icon"
-            (click)="eliminar(i)"
+            (click)="$event.stopPropagation(); eliminar(i)"
           />
         </td>
       </tr>
     </tbody>
   </table>
   <div class="table-actions-right">
-    <button class="btn btn-primary" [routerLink]="['/admin/assign-stops']">
-      Asignar parada
+    <button class="btn btn-primary" [disabled]="!selectedRoute" [routerLink]="selectedRoute ? ['/admin/assign-stops', selectedRoute.id] : null">
+      Asignar paradas
       <img src="bus-stopV.png" alt="icono" style="width:20px;height:20px;" />
     </button>
+
   </div>
 </div>

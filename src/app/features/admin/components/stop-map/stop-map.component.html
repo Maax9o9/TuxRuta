@@ -16,5 +16,5 @@
     </div>
   </div>
 
-  <app-create-stop-form *ngIf="showStopForm" (close)="onCloseStopForm()" />
+  <app-create-stop-form *ngIf="showStopForm" (close)="onCloseStopForm()" [token]="token" [rutaId]="rutaId" [ubicacion]="clickedLatLng ? { lat: clickedLatLng.lat, lng: clickedLatLng.lng, order: currentOrder } : null" />
 </ng-container>

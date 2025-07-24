@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ColectiveTableComponent } from '../../../../components/tables/colective-table/colective-table.component';
 
@@ -9,4 +10,13 @@ import { ColectiveTableComponent } from '../../../../components/tables/colective
   templateUrl: './colective-table-page.component.html',
   styleUrls: ['./colective-table-page.component.scss']
 })
-export class ColectiveTablePageComponent {}
+export class ColectiveTablePageComponent implements OnInit {
+  token: string | undefined = undefined;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const storedToken = localStorage.getItem('jwt_token');
+      this.token = storedToken ? storedToken : undefined;
+    }
+  }
+}

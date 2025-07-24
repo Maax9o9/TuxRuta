@@ -5,6 +5,7 @@ import {
   OnInit,
   AfterViewInit,
   ViewChild,
+  Input
 } from '@angular/core';
 import {
   CommonModule,
@@ -12,6 +13,9 @@ import {
 } from '@angular/common';
 import { GoogleMapsModule, GoogleMap } from '@angular/google-maps';
 import { CreateStopFormComponent } from '../forms/create-stop-form/create-stop-form.component';
+import { Stop } from '../../data/models/stop.model';
+import { StopRepository } from '../../data/repository/stop-repository';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-stop-map',
@@ -21,6 +25,8 @@ import { CreateStopFormComponent } from '../forms/create-stop-form/create-stop-f
   styleUrls: ['./stop-map.component.scss'],
 })
 export class StopMapComponent implements OnInit, AfterViewInit {
+  @Input() token: string | undefined;
+  @Input() rutaId: number | null = null;
   isBrowser = false;
   zoom = 15;
   center: google.maps.LatLngLiteral = { lat: -17.3935, lng: -66.1570 };
@@ -29,8 +35,10 @@ export class StopMapComponent implements OnInit, AfterViewInit {
   public mapInstance!: google.maps.Map;
 
   markers: google.maps.Marker[] = [];
-
   markerIconUrl: string = 'bus-stopR.png';
+
+  // ...existing code...
+  currentOrder: number = 1;
 
   mapOptions: google.maps.MapOptions = {
     disableDefaultUI: false,
@@ -47,33 +55,36 @@ export class StopMapComponent implements OnInit, AfterViewInit {
     keyboardShortcuts: true,
   };
 
-  // Modal form control
   showStopForm = false;
   clickedLatLng: google.maps.LatLngLiteral | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+
+  stops: Stop[] = [];
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private stopRepository: StopRepository
+  ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit(): void {
     if (this.isBrowser) {
       this.getCurrentLocation();
+      // No cargar paradas existentes, solo permitir agregar nuevas
+      this.stops = [];
+      this.markers = [];
+      this.currentOrder = 1;
     }
   }
+
+  // Removed: getAllStopsWithToken, now handled in ngOnInit with subscribe
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
       this.waitForGoogleMapsAPI().then(() => {
         setTimeout(() => {
           this.initializeMapFallback();
-
-          if (this.mapInstance) {
-            this.mapInstance.addListener('click', (e: google.maps.MapMouseEvent) => {
-              if (e.latLng) {
-                this.addStopMarker(e.latLng);
-              }
-            });
-          }
         }, 0);
       });
     }
@@ -83,6 +94,12 @@ export class StopMapComponent implements OnInit, AfterViewInit {
     const target = event.target as any;
     if (target && target.googleMap) {
       this.mapInstance = target.googleMap;
+      // Siempre agregar el listener de click aquí también
+      this.mapInstance.addListener('click', (e: google.maps.MapMouseEvent) => {
+        if (e.latLng) {
+          this.addStopMarker(e.latLng);
+        }
+      });
     }
   }
 
@@ -155,25 +172,52 @@ export class StopMapComponent implements OnInit, AfterViewInit {
     );
   }
 
-addStopMarker(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
-  const marker = new google.maps.Marker({
-    position: latLng,
-    map: this.mapInstance,
-    icon: {
-      url: this.markerIconUrl,
-      scaledSize: new google.maps.Size(40, 40),
-    },
-  });
+  addStopMarker(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {
+    // Solo mostrar el modal, no crear el marker aún
+    this.clickedLatLng = latLng instanceof google.maps.LatLng
+      ? { lat: latLng.lat(), lng: latLng.lng() }
+      : latLng;
+    this.showStopForm = true;
+  }
 
-  this.markers.push(marker);
-
-  this.clickedLatLng = latLng instanceof google.maps.LatLng
-    ? { lat: latLng.lat(), lng: latLng.lng() }
-    : latLng;
-
-  this.showStopForm = true;
-}
-
+  createStop(stopData: Omit<Stop, 'id'>) {
+    // Construir ubicacion con lat/lng y order
+    if (!this.clickedLatLng) return;
+    const ubicacion = {
+      lat: this.clickedLatLng.lat,
+      lng: this.clickedLatLng.lng,
+      order: this.currentOrder
+    };
+    const stopToSave = {
+      ...stopData,
+      ubicacion,
+      ruta_id: this.rutaId ?? 0
+    };
+    this.stopRepository.create(stopToSave, this.token).subscribe({
+      next: (newStop) => {
+        if (newStop) {
+          // Agregar marker solo si el backend responde OK
+          const marker = new google.maps.Marker({
+            position: { lat: ubicacion.lat, lng: ubicacion.lng },
+            map: this.mapInstance,
+            icon: {
+              url: this.markerIconUrl,
+              scaledSize: new google.maps.Size(40, 40),
+            },
+          });
+          this.markers.push(marker);
+          this.stops.push(newStop);
+          this.currentOrder++;
+        }
+        this.showStopForm = false;
+        this.clickedLatLng = null;
+      },
+      error: (err) => {
+        this.showStopForm = false;
+        this.clickedLatLng = null;
+      }
+    });
+  }
 
   removeLastStop(): void {
     const lastMarker = this.markers.pop();

@@ -1,35 +1,34 @@
 import { Injectable } from '@angular/core';
-import { RoutePath } from '../../data/models/route-path.model';
-import { RoutePathRepository } from '../../data/repository/route-path-repository';
+import { Route } from '../../data/models/route.model';
+import { RouteRepository } from '../../data/repository/route-repository';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GetRoutePathByIdUseCase {
 
-  constructor(private routePathRepository: RoutePathRepository) {}
+  constructor(private routeRepository: RouteRepository) {}
 
-  async execute(id: string): Promise<RoutePath | null> {
-    try {
-      console.log('GetRoutePathByIdUseCase: Ejecutando búsqueda de ruta por ID', id);
-      
-      if (!id || id.trim().length === 0) {
-        console.error('GetRoutePathByIdUseCase: ID de ruta es requerido');
-        return null;
-      }
-
-      const result = await this.routePathRepository.getById(id);
-      
-      if (result) {
-        console.log('GetRoutePathByIdUseCase: Ruta encontrada exitosamente', result);
-      } else {
-        console.log('GetRoutePathByIdUseCase: Ruta no encontrada con ID:', id);
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('GetRoutePathByIdUseCase: Error inesperado', error);
-      return null;
+  execute(id: number): Observable<Route | null> {
+    console.log('GetRoutePathByIdUseCase: Ejecutando búsqueda de ruta por ID', id);
+    if (id === undefined || id === null) {
+      console.error('GetRoutePathByIdUseCase: ID de ruta es requerido');
+      return of(null);
     }
+    return this.routeRepository.getById(id).pipe(
+      tap(result => {
+        if (result) {
+          console.log('GetRoutePathByIdUseCase: Ruta encontrada exitosamente', result);
+        } else {
+          console.log('GetRoutePathByIdUseCase: Ruta no encontrada con ID:', id);
+        }
+      }),
+      catchError(error => {
+        console.error('GetRoutePathByIdUseCase: Error inesperado', error);
+        return of(null);
+      })
+    );
   }
 }

@@ -1,3 +1,26 @@
+.btn:disabled,
+.btn[disabled] {
+  background: #e0e0e0 !important;
+  color: #888 !important;
+  cursor: not-allowed;
+  border: none;
+  opacity: 1;
+}
+.route-table td {
+  transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1), color 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.route-table td.selected-cell {
+  background: #A7C957 !important;
+  color: #444 !important;
+  box-shadow: 0 0 0 2px #A7C95755, 0 2px 8px 0 #A7C95733;
+}
+.route-table td {
+  transition: background 0.3s cubic-bezier(0.4,0,0.2,1), color 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.route-table td.selected-cell {
+  background: #A7C957 !important;
+  color: #444 !important;
+}
 .route-table-wrapper {
   position: relative;
   width: 100%;

@@ -29,8 +29,7 @@
       <label for="ruta" class="form-label">Rutas</label>
       <select id="ruta" formControlName="ruta" class="form-input" (change)="clearMessages()">
         <option value="">Seleccionar ruta</option>
-        <option value="ruta1">Ruta 1</option>
-        <option value="ruta2">Ruta 2</option>
+        <option *ngFor="let route of routes" [value]="route.id">{{ route.nombre }}</option>
       </select>
     </div>
   </div>

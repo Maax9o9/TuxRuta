@@ -10,11 +10,10 @@ export class WeeklyResumeRepository {
 
   async getAll(): Promise<DailyResume[] | null> {
     try {
-      // Datos semanales usando el modelo DailyResume (7 semanas de datos)
       const mockData: DailyResume[] = [
         { 
           id: 1, 
-          fecha: '2025-06-02', // Semana 1 de Junio 2025
+          fecha: '2025-06-02', 
           ruta_id: 1, 
           pasajeros_total: 2450, 
           pasajeros_promedio_por_viaje: 35,
