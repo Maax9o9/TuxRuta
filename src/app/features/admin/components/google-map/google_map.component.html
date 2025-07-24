@@ -14,14 +14,14 @@
     <button 
       class="route-btn undo-btn" 
       (click)="removeLastMarker()"
-      [disabled]="routePoints.length === 0 || !isRouteCreationMode || !mapInitialized || !formCompleted">
+      [disabled]="path_data.length === 0 || !isRouteCreationMode || !mapInitialized || !formCompleted">
       Eliminar Último
     </button>
 
     <button 
       class="route-btn clear-btn" 
       (click)="clearRoute()"
-      [disabled]="routePoints.length === 0 || !mapInitialized || !formCompleted">
+      [disabled]="path_data.length === 0 || !mapInitialized || !formCompleted">
       Limpiar Ruta
     </button>
   </div>
@@ -37,18 +37,18 @@
 
     <p *ngIf="mapInitialized && formCompleted && isRouteCreationMode">
       {{
-        routePoints.length === 0 ? 'Haz click en el mapa para agregar puntos' :
-        routePoints.length === 1 ? 'Agrega un punto más para trazar la ruta' :
-        hasValidRoute ? 'Puntos: ' + routePoints.length + ' - Ruta trazada correctamente' :
-        'Trazando ruta con ' + routePoints.length + ' puntos...'
+        path_data.length === 0 ? 'Haz click en el mapa para agregar puntos' :
+        path_data.length === 1 ? 'Agrega un punto más para trazar la ruta' :
+        hasValidRoute ? 'Puntos: ' + path_data.length + ' - Ruta trazada correctamente' :
+        'Trazando ruta con ' + path_data.length + ' puntos...'
       }}
     </p>
 
-    <p *ngIf="mapInitialized && formCompleted && !isRouteCreationMode && routePoints.length > 0">
-      ✅ Ruta con {{ routePoints.length }} puntos creada. Formulario listo para guardar.
+    <p *ngIf="mapInitialized && formCompleted && !isRouteCreationMode && path_data.length > 0">
+      ✅ Ruta con {{ path_data.length }} puntos creada. Formulario listo para guardar.
     </p>
 
-    <p *ngIf="mapInitialized && formCompleted && !isRouteCreationMode && routePoints.length === 0">
+    <p *ngIf="mapInitialized && formCompleted && !isRouteCreationMode && path_data.length === 0">
       ⏳ Presiona "Activar Trazado" para comenzar a crear la ruta.
     </p>
   </div>

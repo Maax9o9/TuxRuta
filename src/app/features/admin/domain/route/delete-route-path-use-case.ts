@@ -1,34 +1,29 @@
 import { Injectable } from '@angular/core';
-import { RoutePathRepository } from '../../data/repository/route-path-repository';
+import { RouteRepository } from '../../data/repository/route-repository';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeleteRoutePathUseCase {
+export class DeleteRouteUseCase {
+  constructor(private routeRepository: RouteRepository) {}
 
-  constructor(private routePathRepository: RoutePathRepository) {}
-
-  async execute(id: string): Promise<boolean> {
-    try {
-      console.log('DeleteRoutePathUseCase: Ejecutando eliminación de ruta', id);
-      
-      if (!id || id.trim().length === 0) {
-        console.error('DeleteRoutePathUseCase: ID de ruta es requerido');
-        return false;
-      }
-
-      const result = await this.routePathRepository.delete(id);
-      
-      if (result) {
-        console.log('DeleteRoutePathUseCase: Ruta eliminada exitosamente');
-      } else {
-        console.error('DeleteRoutePathUseCase: Error al eliminar ruta');
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('DeleteRoutePathUseCase: Error inesperado', error);
-      return false;
+  execute(id: number): Observable<boolean> {
+    console.log('DeleteRouteUseCase: Ejecutando eliminación de ruta', id);
+    if (id === undefined || id === null) {
+      console.error('DeleteRouteUseCase: ID de ruta es requerido');
+      return of(false);
     }
+    return this.routeRepository.delete(id).pipe(
+      tap(() => {
+        console.log('DeleteRouteUseCase: Ruta eliminada exitosamente');
+      }),
+      catchError(error => {
+        console.error('DeleteRouteUseCase: Error al eliminar ruta', error);
+        return of(false);
+      }),
+      require('rxjs/operators').map(() => true)
+    );
   }
 }

@@ -1,12 +1,12 @@
-<div *ngIf="location; else loading">
-  <p><strong>ID:</strong> {{ location.id }}</p>
-  <p><strong>Colectivo ID:</strong> {{ location.colectivo_id }}</p>
-  <p><strong>Latitud:</strong> {{ location.latitud }}</p>
-  <p><strong>Longitud:</strong> {{ location.longitud }}</p>
-  <p><strong>Velocidad:</strong> {{ location.velocidad }} km/h</p>
-  <p><strong>Fecha/Hora:</strong> {{ location.fecha_hora | date:'short' }}</p>
-</div>
+<ng-container *ngIf="colective$ | async as colective; else loading">
+  <p><strong>ID:</strong> {{ colective.id }}</p>
+  <p><strong>Matrícula:</strong> {{ colective.matricula }}</p>
+  <p><strong>Ruta ID:</strong> {{ colective.ruta_id }}</p>
+  <p><strong>Activo:</strong> {{ colective.activo ? 'Sí' : 'No' }}</p>
+  <p><strong>Creado por:</strong> {{ colective.creado_por }}</p>
+  <p><strong>Creado en:</strong> {{ colective.creado_en | date:'short' }}</p>
+</ng-container>
 
 <ng-template #loading>
-  <p>Esperando datos del GPS...</p>
+  <p>Esperando datos del colectivo...</p>
 </ng-template>

@@ -1,35 +1,41 @@
 import { Injectable } from '@angular/core';
-import { RoutePath,RoutePathUpdateRequest } from '../../data/models/route-path.model';
-import { RoutePathRepository } from '../../data/repository/route-path-repository';
+import { Route, Point } from '../../data/models/route.model';
+import { RouteRepository } from '../../data/repository/route-repository';
+import { Observable, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UpdateRoutePathUseCase {
 
-  constructor(private routePathRepository: RoutePathRepository) {}
+  constructor(private routeRepository: RouteRepository) {}
 
-  async execute(request: RoutePathUpdateRequest): Promise<RoutePath | null> {
-    try {
-      console.log('UpdateRoutePathUseCase: Ejecutando actualización de ruta', request);
-      
-      if (!request.id || request.id.trim().length === 0) {
-        console.error('UpdateRoutePathUseCase: ID de ruta es requerido');
-        return null;
-      }
-
-      const result = await this.routePathRepository.update(request);
-      
-      if (result) {
-        console.log('UpdateRoutePathUseCase: Ruta actualizada exitosamente', result);
-      } else {
-        console.error('UpdateRoutePathUseCase: Error al actualizar ruta');
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('UpdateRoutePathUseCase: Error inesperado', error);
-      return null;
+  execute(request: {
+    id: number;
+    nombre?: string;
+    descripcion?: string;
+    path_data?: Point[];
+    activa?: boolean;
+    modificado_por?: number;
+  }): Observable<Route | null> {
+    console.log('UpdateRoutePathUseCase: Ejecutando actualización de ruta', request);
+    if (request.id === undefined || request.id === null) {
+      console.error('UpdateRoutePathUseCase: ID de ruta es requerido');
+      return of(null);
     }
+    return this.routeRepository.update(request.id, request).pipe(
+      tap(result => {
+        if (result) {
+          console.log('UpdateRoutePathUseCase: Ruta actualizada exitosamente', result);
+        } else {
+          console.error('UpdateRoutePathUseCase: Error al actualizar ruta');
+        }
+      }),
+      catchError(error => {
+        console.error('UpdateRoutePathUseCase: Error inesperado', error);
+        return of(null);
+      })
+    );
   }
 }

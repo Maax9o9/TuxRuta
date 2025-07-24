@@ -2,17 +2,26 @@
   <div class="create-stop-modal-container">
     <button class="close-button" (click)="onCancel()">×</button>
 
-    <h2>Nombre de la parada</h2>
+    <h2>Crear parada</h2>
     <p class="subtitle">Puede ser alguna referencia cercana o nombre de<br>una calle o avenida</p>
 
     <form [formGroup]="stopForm" (ngSubmit)="onSave()">
-      <label for="stopName">Nombre de la parada</label>
+      <label for="nombre">Nombre de la parada</label>
       <input
-        id="stopName"
+        id="nombre"
         type="text"
-        formControlName="stopName"
+        formControlName="nombre"
         placeholder="ejemplo: 9va sur, entre hospital regional"
       />
+      <div *ngIf="stopForm.get('nombre')?.invalid && stopForm.get('nombre')?.touched" class="error">
+        El nombre es obligatorio.
+      </div>
+
+      <label for="activa">¿Parada activa?</label>
+      <select id="activa" formControlName="activa">
+        <option [value]="true">Sí</option>
+        <option [value]="false">No</option>
+      </select>
 
       <div class="button-group">
         <button type="button" class="cancel-btn" (click)="onCancel()">Cancelar</button>

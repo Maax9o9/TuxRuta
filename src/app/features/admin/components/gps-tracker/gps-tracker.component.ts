@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { GetRealTimeLocationUseCase } from '../../domain/get-real-time-location-use-case';
-import { ColectiveLocation } from '../../data/models/colective-location.model';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Colective } from '../../data/models/colective.model';
+import { GetColectiveByIdUseCase } from '../../domain/colective/get-colective-by-id.use-case';
+import { ColectiveRepository } from '../../data/repository/colective-repository';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-gps-tracker',
@@ -12,19 +13,24 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./gps-tracker.component.scss']
 })
 export class GpsTrackerComponent implements OnInit, OnDestroy {
-  location: ColectiveLocation | null = null;
-  private subscription?: Subscription;
+  colective$: Observable<Colective | null> | undefined;
+  private getColectiveByIdUseCase: GetColectiveByIdUseCase;
+  token: string | undefined = undefined;
 
-  constructor(private getRealTimeLocationUseCase: GetRealTimeLocationUseCase) {}
+  constructor(
+    private repository: ColectiveRepository,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.getColectiveByIdUseCase = new GetColectiveByIdUseCase(this.repository);
+  }
 
   ngOnInit(): void {
-    this.subscription = this.getRealTimeLocationUseCase.execute().subscribe({
-      next: loc => this.location = loc,
-      error: err => console.error('Error al obtener ubicación:', err)
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      const storedToken = localStorage.getItem('jwt_token');
+      this.token = storedToken ? storedToken : undefined;
+      this.colective$ = this.getColectiveByIdUseCase.execute(1, this.token);
+    }
   }
 
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 }

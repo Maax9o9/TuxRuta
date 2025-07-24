@@ -2,9 +2,8 @@ export interface AdminUser {
   id: number;
   email: string;
   password: string;
-  nombre: string;
-  rol: string;
+  readonly rol: 'admin';
   activo: boolean;
-  ultimo_acceso: string; 
-  creado_en: string;    
+  ultimo_acceso?: string | null;
+  creado_en: string;
 }
