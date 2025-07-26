@@ -1,9 +1,21 @@
 <header class="header-container">
-  <div class="nav-button left">Rutas</div>
-
   <div class="logo">
     <img src="Logo_TuxRuta.png" alt="Logo" />
+    <span class="logo-text">TuxRuta</span>
   </div>
+  <div class="header-center">
+    <app-search-bar [disabledInput]="true"></app-search-bar>
+  </div>
+  <div class="header-actions">
+    <span class="header-clock">
+      {{ currentTime }}
+      <span class="header-separator"></span>
+      <span class="header-icon-space">
+      </span>
+    </span>
+    <span class="header-separator"></span>
+    <span class="header-icon-space">
 
-  <div class="nav-button right">Acerca de nosotros</div>
+    </span>
+  </div>
 </header>

@@ -11,9 +11,9 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
   styleUrls: ['./rush-hour-page.component.scss']
 })
 export class RushHourPageComponent implements AfterViewInit {
+  token: string | null = null;
   @ViewChild(RushHourComponent) rushHourComponent!: RushHourComponent;
 
-  // Initial filter data
   initialFilterData: FilterData = {
     filterType: 'month',
     selectedYear: 2025,
@@ -23,8 +23,14 @@ export class RushHourPageComponent implements AfterViewInit {
 
   constructor() {}
 
+  setToken(token: string) {
+    this.token = token;
+    if (this.rushHourComponent && 'setToken' in this.rushHourComponent) {
+      (this.rushHourComponent as any).setToken(token);
+    }
+  }
+
   ngAfterViewInit(): void {
-    // Initial load with default filters
     setTimeout(() => {
       this.onFilterChange(this.initialFilterData);
     }, 500);

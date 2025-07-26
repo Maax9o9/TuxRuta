@@ -1,35 +1,99 @@
-.search-bar {
-  width: 100%;
-  max-width: 550px;
-  display: flex;
-  justify-content: center;
+$verde-busqueda: #2f5d38;
+$stretch-transition: all 2.4s cubic-bezier(0.77, 0, 0.175, 1); 
 
-  .search-input {
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 300px;
+  gap: 1rem;
+  transition: $stretch-transition;
+  overflow: hidden;
+  user-select: none;
+
+
+  .search-button {
+    background-color: $verde-busqueda;
+    border: none;
+    border-radius: 50%;
+    width: 2.4rem;
+    height: 30px;
     display: flex;
     align-items: center;
-    background-color: #2f2f2f;
+    justify-content: center;
+    cursor: pointer;
+    transition: $stretch-transition;
+
+    .search-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+  }
+
+  .search-input {
+    user-select: text;
+    border: none;
     border-radius: 9999px;
-    padding: 0.5rem 1rem;
-    width: 100%;
-    max-width: 100%;
-    color: #a7c957;
+    padding: 0.4rem 0.9rem;
+    outline: none;
+    font-size: 1rem;
+    color: white;
+    background-color: $verde-busqueda;
+    width: 0;
+    opacity: 0;
+    min-width: 0;
+    flex-grow: 1;
+    max-width: 180px;
+    transition: $stretch-transition;
+  }
 
-    i {
-      color: #a7c957;
-      margin-right: 0.5rem;
+  .tabs {
+    display: flex;
+    gap: 1.5rem;
+    flex-shrink: 0;
+    transition: $stretch-transition;
+    overflow: hidden;
+
+    .tab {
+      font-weight: 500;
+      color: black;
+      cursor: pointer;
+      padding: 0 0.5rem;
+      position: relative;
+      white-space: nowrap;
     }
 
-    input {
-      border: none;
-      background: transparent;
-      outline: none;
-      color: #ffffff;
-      font-size: 1rem;
-      flex: 1;
+    .tab:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 1.2rem;
+      width: 1px;
+      background-color: #ccc;
+    }
+  }
+
+  &.expanded {
+    .tabs {
+      opacity: 0;
+      width: 0;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
     }
 
-    input::placeholder {
-      color: #a7c957;
+    .search-input {
+      width: 100%;
+      opacity: 1;
+      min-width: 140px; // Suaviza el crecimiento inicial
     }
   }
 }

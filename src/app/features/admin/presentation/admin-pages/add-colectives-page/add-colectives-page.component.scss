@@ -1,3 +1,11 @@
+:host {
+  /* ...existing code... */
+  overflow-x: hidden;
+}
+
+.table-section {
+  display: none !important;
+}
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 :host {
@@ -6,6 +14,7 @@
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .add-colectives-page-container {
@@ -13,6 +22,8 @@
   width: 100%;
   min-height: 100vh;
   background-color: #212121;
+  user-select: none;
+
 }
 
 .page-top-bar {

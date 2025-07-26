@@ -9,23 +9,24 @@ export class GetMonthlyResumeByIdUseCase {
 
   constructor(private monthlyResumeRepository: MonthlyResumeRepository) {}
 
-  async execute(id: number): Promise<MonthlyResume | null> {
+  execute(id: number): Promise<MonthlyResume | null> {
     console.log('Monthly UseCase: Getting monthly resume by ID:', id);
-    
-    try {
-      const response: MonthlyResume[] | null = await this.monthlyResumeRepository.getAll();
-      
-      if (response != null && response.length > 0) {
-        const monthlyResume = response.find(item => item.id === id);
-        console.log('Monthly UseCase: Found monthly resume:', monthlyResume);
-        return monthlyResume || null;
+    return new Promise((resolve) => {
+      if (!this.monthlyResumeRepository.getById) {
+        console.error('Monthly UseCase: getById method not implemented in repository');
+        resolve(null);
+        return;
       }
-      
-      return null;
-    
-    } catch (error) {
-      console.error('Monthly UseCase: Error getting monthly resume by ID:', error);
-      return null;
-    }
+      this.monthlyResumeRepository.getById(id).subscribe({
+        next: (response) => {
+          console.log('Monthly UseCase: Found monthly resume:', response);
+          resolve(response || null);
+        },
+        error: (error) => {
+          console.error('Monthly UseCase: Error getting monthly resume by ID:', error);
+          resolve(null);
+        }
+      });
+    });
   }
 }

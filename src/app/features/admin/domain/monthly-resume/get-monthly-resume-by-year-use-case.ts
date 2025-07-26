@@ -9,23 +9,19 @@ export class GetMonthlyResumeByYearUseCase {
 
   constructor(private monthlyResumeRepository: MonthlyResumeRepository) {}
 
-  async execute(year: number): Promise<MonthlyResume[] | null> {
+  execute(year: number): Promise<MonthlyResume[] | null> {
     console.log('Monthly UseCase: Getting monthly resume by year:', year);
-    
-    try {
-      const response: MonthlyResume[] | null = await this.monthlyResumeRepository.getAll();
-      
-      if (response != null && response.length > 0) {
-        const filteredData = response.filter(item => item.año === year);
-        console.log('Monthly UseCase: Found monthly resumes for year:', filteredData);
-        return filteredData.length > 0 ? filteredData : null;
-      }
-      
-      return null;
-    
-    } catch (error) {
-      console.error('Monthly UseCase: Error getting monthly resume by year:', error);
-      return null;
-    }
+    return new Promise((resolve) => {
+      this.monthlyResumeRepository.getByYear(year).subscribe({
+        next: (response) => {
+          console.log('Monthly UseCase: Found monthly resumes for year:', response);
+          resolve(response && response.length > 0 ? response : null);
+        },
+        error: (error) => {
+          console.error('Monthly UseCase: Error getting monthly resume by year:', error);
+          resolve(null);
+        }
+      });
+    });
   }
 }

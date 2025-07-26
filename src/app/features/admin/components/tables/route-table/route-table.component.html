@@ -17,7 +17,7 @@
             src="delete.png"
             alt="Eliminar"
             class="delete-icon"
-            (click)="$event.stopPropagation(); eliminar(i)"
+            (click)="$event.stopPropagation(); onDeleteClick(i)"
           />
         </td>
       </tr>
@@ -28,6 +28,10 @@
       Asignar paradas
       <img src="bus-stopV.png" alt="icono" style="width:20px;height:20px;" />
     </button>
-
   </div>
 </div>
+<app-confirm-delete-alert *ngIf="showConfirmDelete"
+  (cancel)="onCancelDelete()"
+  (delete)="onConfirmDelete()">
+</app-confirm-delete-alert>
+<app-delete-alert *ngIf="showDeleteAlert" (close)="onCloseDeleteAlert()"></app-delete-alert>

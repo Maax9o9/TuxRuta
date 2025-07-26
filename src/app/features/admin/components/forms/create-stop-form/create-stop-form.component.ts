@@ -49,6 +49,7 @@ export class CreateStopFormComponent {
         next: (result) => {
           if (result) {
             this.save.emit(result);
+            this.cancel.emit(); // Cierra el modal al guardar
           } else {
             this.error = 'No se pudo crear la parada.';
           }

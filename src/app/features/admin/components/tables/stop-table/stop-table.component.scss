@@ -1,0 +1,40 @@
+.stop-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #2F2F2F;
+  font-family: 'Poppins', sans-serif;
+  color: #A7C957;
+   user-select: none;
+   pointer-events: auto;
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: none;
+  }
+
+  th {
+    font-weight: bold;
+    border-bottom: 2px solid #A7C957;
+    background-color: #2F2F2F;
+  }
+
+  td {
+    background-color: #2F2F2F;
+  }
+  th {
+    font-weight: bold;
+  }
+
+  .delete-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    filter: invert(29%) sepia(93%) saturate(422%) hue-rotate(331deg) brightness(86%) contrast(101%);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}

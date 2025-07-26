@@ -11,6 +11,7 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
   styleUrls: ['./high-occupancy-page.component.scss']
 })
 export class HighOccupancyPageComponent implements AfterViewInit {
+  token: string | null = null;
   @ViewChild(HighOccupancyComponent) highOccupancyComponent!: HighOccupancyComponent;
 
   // Initial filter data
@@ -22,6 +23,13 @@ export class HighOccupancyPageComponent implements AfterViewInit {
   };
 
   constructor() {}
+
+  setToken(token: string) {
+    this.token = token;
+    if (this.highOccupancyComponent && 'setToken' in this.highOccupancyComponent) {
+      (this.highOccupancyComponent as any).setToken(token);
+    }
+  }
 
   ngAfterViewInit(): void {
     // Initial load with default filters

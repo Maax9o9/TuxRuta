@@ -10,7 +10,7 @@
           class="nav-button"
           [class.active]="isActiveRoute('/admin/dashboard')"
           (click)="navigateTo('/admin/dashboard')">
-          <i class="nav-icon dashboard-icon"></i>
+          <img *ngIf="iconPaths.dashboard" [src]="iconPaths.dashboard" [ngStyle]="getIconStyle()" alt="icono dashboard" />
           <span class="nav-text">Dashboard</span>
         </button>
       </li>
@@ -20,7 +20,7 @@
           class="nav-button"
           [class.active]="isActiveRoute('/admin/metricas')"
           (click)="toggleMetricas()">
-          <i class="nav-icon metrics-icon"></i>
+          <img *ngIf="iconPaths.metricas" [src]="iconPaths.metricas" [ngStyle]="getIconStyle()" alt="icono métricas" />
           <span class="nav-text">Métricas</span>
           <i class="nav-arrow" [class.expanded]="isMetricasExpanded">▼</i>
         </button>
@@ -78,50 +78,64 @@
         </ul>
       </li>
 
-      <li class="nav-item">
-        <button 
-          class="nav-button"
-          [class.active]="isActiveRoute('/admin/add-routes')"
-          (click)="navigateTo('/admin/add-routes')">
-          <i class="nav-icon routes-icon"></i>
-          <span class="nav-text">Crear Rutas</span>
-        </button>
-      </li>
-      <li class="nav-item">
-        <button 
-          class="nav-button"
-          [class.active]="isActiveRoute('/admin/add-colectives')"
-          (click)="navigateTo('/admin/add-colectives')">
-          <i class="nav-icon"></i>
-          <span class="nav-text">Crear Colectivos</span>
-        </button>
-      </li>
 
-      <!-- Mini menú Tablas -->
+      <!-- Submenú Colectivos -->
       <li class="nav-item">
         <button 
           class="nav-button"
-          [class.active]="isTablasExpanded"
-          (click)="toggleTablas()">
-          <i class="nav-icon"></i>
-          <span class="nav-text">Tablas</span>
-          <i class="nav-arrow" [class.expanded]="isTablasExpanded">▼</i>
+          (click)="toggleColectivos()">
+          <img *ngIf="iconPaths.colectivos" [src]="iconPaths.colectivos" [ngStyle]="getIconStyle()" alt="icono colectivos" />
+          <span class="nav-text">Colectivos</span>
+          <i class="nav-arrow" [class.expanded]="isColectivosExpanded">▼</i>
         </button>
-        <ul class="submenu" [class.expanded]="isTablasExpanded">
+        <ul class="submenu" [class.expanded]="isColectivosExpanded">
           <li class="submenu-item">
-            <button 
-              class="submenu-button"
-              [class.active]="isActiveRoute('/admin/colective-table')"
-              (click)="navigateTo('/admin/colective-table')">
-              <span class="submenu-text">Tabla de Colectivos</span>
+            <button class="submenu-button" (click)="navigateTo('/admin/add-colectives')">
+              <span class="submenu-text">Crear Colectivo</span>
             </button>
           </li>
           <li class="submenu-item">
-            <button 
-              class="submenu-button"
-              [class.active]="isActiveRoute('/admin/routes-table')"
-              (click)="navigateTo('/admin/routes-table')">
+            <button class="submenu-button" (click)="navigateTo('/admin/colective-table')">
+              <span class="submenu-text">Tabla de Colectivos</span>
+            </button>
+          </li>
+        </ul>
+      </li>
+      <!-- Submenú Rutas -->
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          (click)="toggleRutas()">
+          <img *ngIf="iconPaths.rutas" [src]="iconPaths.rutas" [ngStyle]="getIconStyle()" alt="icono rutas" />
+          <span class="nav-text">Rutas</span>
+          <i class="nav-arrow" [class.expanded]="isRutasExpanded">▼</i>
+        </button>
+        <ul class="submenu" [class.expanded]="isRutasExpanded">
+          <li class="submenu-item">
+            <button class="submenu-button" (click)="navigateTo('/admin/add-routes')">
+              <span class="submenu-text">Crear Ruta</span>
+            </button>
+          </li>
+          <li class="submenu-item">
+            <button class="submenu-button" (click)="navigateTo('/admin/routes-table')">
               <span class="submenu-text">Tabla de Rutas</span>
+            </button>
+          </li>
+        </ul>
+      </li>
+      <!-- Submenú Paradas -->
+      <li class="nav-item">
+        <button 
+          class="nav-button"
+          (click)="toggleParadas()">
+          <img *ngIf="iconPaths.paradas" [src]="iconPaths.paradas" [ngStyle]="getIconStyle()" alt="icono paradas" />
+          <span class="nav-text">Paradas</span>
+          <i class="nav-arrow" [class.expanded]="isParadasExpanded">▼</i>
+        </button>
+        <ul class="submenu" [class.expanded]="isParadasExpanded">
+          <li class="submenu-item">
+            <button class="submenu-button" (click)="navigateTo('/admin/stop-table')">
+              <span class="submenu-text">Tabla de Paradas</span>
             </button>
           </li>
         </ul>
@@ -131,6 +145,7 @@
 
 <div class="sidebar-footer">
   <button class="logout-button" (click)="logout()">
+    <img *ngIf="iconPaths.logout" [src]="iconPaths.logout" [ngStyle]="getIconStyle()" alt="icono logout" />
     <fa-icon [icon]="faRightFromBracket"></fa-icon>
   </button>
 </div>

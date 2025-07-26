@@ -11,6 +11,7 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
   styleUrls: ['./travel-promedy-page.component.scss']
 })
 export class TravelPromedyPageComponent implements AfterViewInit {
+  token: string | null = null;
   @ViewChild(TravelPromedyComponent) travelPromedyComponent!: TravelPromedyComponent;
 
   // Initial filter data
@@ -22,6 +23,13 @@ export class TravelPromedyPageComponent implements AfterViewInit {
   };
 
   constructor() {}
+
+  setToken(token: string) {
+    this.token = token;
+    if (this.travelPromedyComponent && 'setToken' in this.travelPromedyComponent) {
+      (this.travelPromedyComponent as any).setToken(token);
+    }
+  }
 
   ngAfterViewInit(): void {
     // Initial load with default filters

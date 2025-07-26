@@ -35,6 +35,10 @@ export const routes: Routes = [
         path: 'routes-table',
         loadComponent: () => import('./features/admin/presentation/admin-pages/tables/route-table-page/route-table-page.component').then(m => m.RouteTablePageComponent)
       },
+    {
+      path: 'stop-table',
+      loadComponent: () => import('./features/admin/presentation/admin-pages/tables/stop-table-page/stop-table-page.component').then(m => m.StopTablePageComponent)
+    },
       {
         path: 'metrics/confidence-interval',
         loadComponent: () => import('./features/admin/presentation/admin-pages/metrics/confidence-interval-page/confidence-interval-page.component').then(m => m.ConfidenceIntervalPageComponent)
@@ -84,12 +88,20 @@ export const routes: Routes = [
   // },
   // Citizen routes
   {
+    path: 'home',
+    loadComponent: () => import('./features/citizen/pages/home-page/home-page.component').then(m => m.HomePageComponent)
+  },
+  {
     path: 'routes',
     loadComponent: () => import('./features/citizen/pages/route-page/route-page.component').then(m => m.RoutePageComponent)
   },
   {
+    path: 'about-us',
+    loadComponent: () => import('./features/citizen/pages/about-us-page/about-us-page.component').then(m => m.AboutUsPageComponent)
+  },
+  {
     path: '',
-    redirectTo: '/new-login',
+    redirectTo: '/home',
     pathMatch: 'full'
   }
 ];

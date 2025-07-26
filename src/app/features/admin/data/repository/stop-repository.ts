@@ -8,6 +8,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class StopRepository {
+  getByRouteId(rutaId: number, token?: string): Observable<Stop[]> {
+    // Usa el endpoint específico de paradas por ruta
+    return this.http.get<Stop[]>(`${environments.apiParadasPorRuta}/${rutaId}`, { headers: this.getHeaders(token) });
+  }
   private apiUrl = environments.apiParadas;
 
   constructor(private http: HttpClient) {}

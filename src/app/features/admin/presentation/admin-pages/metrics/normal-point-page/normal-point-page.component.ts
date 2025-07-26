@@ -11,6 +11,7 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
   styleUrls: ['./normal-point-page.component.scss']
 })
 export class NormalPointPageComponent implements AfterViewInit {
+  token: string | null = null;
   @ViewChild(NormalDistributionComponent) normalDistributionComponent!: NormalDistributionComponent;
 
   // Initial filter data
@@ -22,6 +23,13 @@ export class NormalPointPageComponent implements AfterViewInit {
   };
 
   constructor() {}
+
+  setToken(token: string) {
+    this.token = token;
+    if (this.normalDistributionComponent && 'setToken' in this.normalDistributionComponent) {
+      (this.normalDistributionComponent as any).setToken(token);
+    }
+  }
 
   ngAfterViewInit(): void {
     // Initial load with default filters

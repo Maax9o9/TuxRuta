@@ -1,3 +1,4 @@
+<app-delete-alert *ngIf="showDeleteAlert" (close)="onCloseDeleteAlert()"></app-delete-alert>
 <table class="colective-table">
   <thead>
     <tr>
@@ -16,9 +17,13 @@
           src="delete.png"
           alt="Eliminar"
           class="delete-icon"
-          (click)="eliminar(i)"
+          (click)="onDeleteClick(i)"
         />
       </td>
     </tr>
   </tbody>
 </table>
+<app-confirm-delete-alert *ngIf="showConfirmDelete"
+  (cancel)="onCancelDelete()"
+  (delete)="onConfirmDelete()">
+</app-confirm-delete-alert>
