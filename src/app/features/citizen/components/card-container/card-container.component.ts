@@ -10,4 +10,9 @@ import { CommonModule } from '@angular/common';
   
 export class CardContainerComponent {
   cards = Array.from({ length: 10 }, (_, i) => `Tarjeta ${i + 1}`);
+  selectedIndex: number|null = null;
+
+  selectCard(index: number) {
+    this.selectedIndex = index;
+  }
 }

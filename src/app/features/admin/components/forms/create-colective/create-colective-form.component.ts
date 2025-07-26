@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { ConfirmSaveAlertComponent } from '../../alerts/confirm-save-alert/confirm-save-alert.component';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ColectiveRepository } from '../../../data/repository/colective-repository';
 import { RouteRepository } from '../../../data/repository/route-repository';
 import { Route } from '../../../data/models/route.model';
@@ -8,13 +9,14 @@ import { Route } from '../../../data/models/route.model';
 @Component({
   selector: 'app-create-colective-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmSaveAlertComponent],
   templateUrl: './create-colective-form.component.html',
   styleUrls: ['./create-colective-form.component.scss']
 })
 export class CreateColectiveFormComponent {
   colectiveForm: FormGroup;
   alertVisible = true;
+  showConfirmAlert = false;
   @Input() token: string | undefined;
   message: string = '';
   routes: Route[] = [];
@@ -25,9 +27,9 @@ export class CreateColectiveFormComponent {
     private routeRepository: RouteRepository
   ) {
     this.colectiveForm = this.fb.group({
-      matricula: [''],
-      ruta: [''],
-      activo: [false]
+      matricula: ['', { nonNullable: true, validators: [Validators.required] }],
+      ruta: ['', { nonNullable: true, validators: [Validators.required] }],
+      activo: [false, { nonNullable: true }]
     });
   }
 
@@ -52,25 +54,35 @@ export class CreateColectiveFormComponent {
 
   onSubmit(): void {
     if (this.colectiveForm.valid) {
-      const formValue = this.colectiveForm.value;
-      const colectiveData: Omit<import('../../../data/models/colective.model').Colective, 'id'> = {
-        matricula: formValue.matricula,
-        ruta_id: Number(formValue.ruta),
-        activo: formValue.activo,
-        creado_por: 1,
-        creado_en: new Date() 
-      };
-      this.repository.create(colectiveData, this.token).subscribe({
-        next: (result) => {
-          this.message = 'Colectivo creado correctamente';
-          this.resetForm();
-        },
-        error: (err) => {
-          this.message = 'Error al crear el colectivo';
-          console.error(err);
-        }
-      });
+      this.showConfirmAlert = true;
     }
+  }
+
+  onConfirmSave(): void {
+    const formValue = this.colectiveForm.value;
+    const colectiveData: Omit<import('../../../data/models/colective.model').Colective, 'id'> = {
+      matricula: formValue.matricula,
+      ruta_id: Number(formValue.ruta),
+      activo: formValue.activo,
+      creado_por: 1,
+      creado_en: new Date()
+    };
+    this.repository.create(colectiveData, this.token).subscribe({
+      next: (result) => {
+        this.message = 'Colectivo creado correctamente';
+        this.resetForm();
+        this.showConfirmAlert = false;
+      },
+      error: (err) => {
+        this.message = 'Error al crear el colectivo';
+        this.showConfirmAlert = false;
+        console.error(err);
+      }
+    });
+  }
+
+  onCancelSave(): void {
+    this.showConfirmAlert = false;
   }
 
   resetForm(): void {

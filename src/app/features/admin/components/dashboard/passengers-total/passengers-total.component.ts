@@ -1,4 +1,5 @@
 import { Component, Inject, PLATFORM_ID, AfterViewInit, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, Chart } from 'chart.js';
@@ -174,15 +175,16 @@ export class PassengersTotalComponent implements AfterViewInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private http: HttpClient
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     // Initialize repositories and use cases
-    const dailyRepository = new DailyResumeRepository();
+    const dailyRepository = new DailyResumeRepository(this.http);
     this.getAllDailyResume = new GetAllDailyResumeUseCase(dailyRepository);
     
-    const monthlyRepository = new MonthlyResumeRepository();
+    const monthlyRepository = new MonthlyResumeRepository(this.http);
     this.getAllMonthlyResume = new GetAllMonthlyResumeUseCase(monthlyRepository);
 
     if (this.isBrowser) {

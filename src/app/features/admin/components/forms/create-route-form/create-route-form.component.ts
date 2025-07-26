@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfirmSaveAlertComponent } from '../../alerts/confirm-save-alert/confirm-save-alert.component';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CreateRouteUseCase } from '../../../domain/route/create-route-use-case';
@@ -8,7 +9,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-create-route-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmSaveAlertComponent],
   templateUrl: './create-route-form.component.html',
   styleUrl: './create-route-form.component.scss'
 })
@@ -25,6 +26,7 @@ export class CreateRouteFormComponent implements OnInit {
   formCompleted = false;
   routeTraced = false;
   canSave = false;
+  showConfirmAlert = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -141,77 +143,64 @@ export class CreateRouteFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.routeForm.valid && this.canSave) {
-      this.isSubmitting = true;
-      this.submitError = false;
-      this.submitSuccess = false;
-      this.errorMessage = '';
-
-      const formData = this.routeForm.value;
-      const routePoints = this.getFormattedRoutePointsFromMap();
-
-      console.log('CreateRouteFormComponent: Enviando datos del formulario', formData);
-      console.log('CreateRouteFormComponent: Puntos de la ruta formateados', routePoints);
-
-      // Crear el objeto de ruta completo con puntos
-      const routeData = {
-        ...formData,
-        points: routePoints
-      };
-
-      console.log('=====================================');
-      console.log('📍 INFORMACIÓN DE LA RUTA GUARDADA:');
-      console.log('=====================================');
-      console.log('📋 Datos del formulario:');
-      console.log('   - Nombre:', routeData.nombre);
-      console.log('   - Descripción:', routeData.descripcion);
-      console.log('🗺️ Puntos de la ruta (' + routeData.points.length + ' puntos):');
-      routeData.points.forEach((point: any, index: number) => {
-        console.log(`   ${index + 1}. Lat: ${point.lat}, Lng: ${point.lng}, Orden: ${point.order}`);
-      });
-      console.log('📦 Objeto completo de la ruta:');
-      console.log(JSON.stringify(routeData, null, 2));
-      console.log('=====================================');
-
-      // Mostrar una alerta simple de confirmación
-      alert(`✅ RUTA GUARDADA EXITOSAMENTE!\n\nNombre: ${routeData.nombre}\nPuntos guardados: ${routeData.points.length}\n\n👀 Ver consola para detalles completos`);
-
-      const sub: Subscription = this.createRouteUseCase.execute(routeData).subscribe({
-        next: (result) => {
-          if (result) {
-            this.submitSuccess = true;
-            this.createdRoute = result;
-            this.routeForm.reset();
-            this.resetForm(); 
-            console.log('CreateRouteFormComponent: Ruta creada exitosamente', result);
-
-            if (typeof window !== 'undefined' && (window as any).clearRouteFromMap) {
-              (window as any).clearRouteFromMap();
-            }
-
-            setTimeout(() => {
-              this.submitSuccess = false;
-              this.createdRoute = null;
-            }, 5000);
-          } else {
-            this.submitError = true;
-            this.errorMessage = 'Error al crear la ruta. Por favor, intenta nuevamente.';
-            console.error('CreateRouteFormComponent: Error al crear la ruta');
-          }
-          this.isSubmitting = false;
-        },
-        error: (error) => {
-          this.submitError = true;
-          this.errorMessage = 'Error inesperado. Por favor, intenta nuevamente.';
-          console.error('CreateRouteFormComponent: Error inesperado', error);
-          this.isSubmitting = false;
-        }
-      });
+      this.showConfirmAlert = true;
     } else {
       Object.keys(this.routeForm.controls).forEach(key => {
         this.routeForm.get(key)?.markAsTouched();
       });
       console.log('CreateRouteFormComponent: Formulario inválido', this.routeForm.errors);
     }
+  }
+
+  onConfirmSave(): void {
+    this.isSubmitting = true;
+    this.submitError = false;
+    this.submitSuccess = false;
+    this.errorMessage = '';
+
+    const formData = this.routeForm.value;
+    const routePoints = this.getFormattedRoutePointsFromMap();
+
+    // Crear el objeto de ruta completo con puntos
+    const routeData = {
+      ...formData,
+      points: routePoints
+    };
+
+    const sub: Subscription = this.createRouteUseCase.execute(routeData).subscribe({
+      next: (result) => {
+        if (result) {
+          this.submitSuccess = true;
+          this.createdRoute = result;
+          this.routeForm.reset();
+          this.resetForm(); 
+          if (typeof window !== 'undefined' && (window as any).clearRouteFromMap) {
+            (window as any).clearRouteFromMap();
+          }
+          setTimeout(() => {
+            this.submitSuccess = false;
+            this.createdRoute = null;
+          }, 5000);
+        } else {
+          this.submitError = true;
+          this.errorMessage = 'Error al crear la ruta. Por favor, intenta nuevamente.';
+          console.error('CreateRouteFormComponent: Error al crear la ruta');
+        }
+        this.isSubmitting = false;
+        this.showConfirmAlert = false;
+      },
+      error: (error) => {
+        this.submitError = true;
+        this.errorMessage = 'Error inesperado. Por favor, intenta nuevamente.';
+        console.error('CreateRouteFormComponent: Error inesperado', error);
+        this.isSubmitting = false;
+        this.showConfirmAlert = false;
+      }
+    });
+  }
+
+  onCancelSave(): void {
+    this.showConfirmAlert = false;
   }
 
   clearMessages(): void {

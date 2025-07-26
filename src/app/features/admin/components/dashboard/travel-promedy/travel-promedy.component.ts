@@ -1,4 +1,5 @@
 import { Component, Inject, PLATFORM_ID, AfterViewInit, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, Chart } from 'chart.js';
@@ -91,13 +92,14 @@ export class TravelPromedyComponent implements AfterViewInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private http: HttpClient
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     // Inject repository dependency  
-    const dailyRepository = new DailyResumeRepository();
-    const monthlyRepository = new MonthlyResumeRepository();
+    const dailyRepository = new DailyResumeRepository(this.http);
+    const monthlyRepository = new MonthlyResumeRepository(this.http);
     this.getAllDailyResume = new GetAllDailyResumeUseCase(dailyRepository);
     this.getAllMonthlyResume = new GetAllMonthlyResumeUseCase(monthlyRepository);
 

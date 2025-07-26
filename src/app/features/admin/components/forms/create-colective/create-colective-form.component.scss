@@ -1,3 +1,12 @@
+.btn[disabled],
+button[disabled] {
+  background: #bdbdbd !important;
+  color: #fff !important;
+  border: none !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+  box-shadow: none !important;
+}
 .create-route-form-container {
   background-color: #343434;
   border: 1px solid #b2f5a5;

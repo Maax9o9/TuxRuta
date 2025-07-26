@@ -13,9 +13,29 @@ import { AdminUserRepository } from '../../data/repository/admin-user-repository
   styleUrls: ['./admin-sidebar.component.scss']
 })
 export class AdminSidebarComponent {
+  iconPaths = {
+    dashboard: 'dashboard1.png',
+    metricas: 'metricas.png', 
+    colectivos: 'colectivo1.png', 
+    rutas: 'rutas.png', 
+    paradas: '', 
+    logout: '' 
+  };
+
+  getIconStyle(): { [key: string]: string } {
+    return {
+      width: '24px',
+      height: '24px',
+      display: 'inline-block',
+      objectFit: 'contain',
+      marginRight: '12px'
+    };
+  }
   currentRoute: string = '';
   isMetricasExpanded: boolean = false;
-  isTablasExpanded: boolean = false;
+  isColectivosExpanded: boolean = false;
+  isRutasExpanded: boolean = false;
+  isParadasExpanded: boolean = false;
 
   faRightFromBracket = faRightFromBracket;
 
@@ -39,32 +59,65 @@ export class AdminSidebarComponent {
 
   toggleMetricas(): void {
     this.isMetricasExpanded = !this.isMetricasExpanded;
+    if (this.isMetricasExpanded) {
+      this.isColectivosExpanded = false;
+      this.isRutasExpanded = false;
+      this.isParadasExpanded = false;
+    }
   }
 
-  toggleTablas(): void {
-    this.isTablasExpanded = !this.isTablasExpanded;
+  toggleColectivos(): void {
+    this.isColectivosExpanded = !this.isColectivosExpanded;
+    if (this.isColectivosExpanded) {
+      this.isMetricasExpanded = false;
+      this.isRutasExpanded = false;
+      this.isParadasExpanded = false;
+    }
   }
+
+  toggleRutas(): void {
+    this.isRutasExpanded = !this.isRutasExpanded;
+    if (this.isRutasExpanded) {
+      this.isMetricasExpanded = false;
+      this.isColectivosExpanded = false;
+      this.isParadasExpanded = false;
+    }
+  }
+
+  toggleParadas(): void {
+    this.isParadasExpanded = !this.isParadasExpanded;
+    if (this.isParadasExpanded) {
+      this.isMetricasExpanded = false;
+      this.isColectivosExpanded = false;
+      this.isRutasExpanded = false;
+    }
+  }
+  // Removed misplaced code block
 
   onSubmenuItemClick(option: string): void {
-    console.log(`Navigating to metric: ${option}`);
-    
-    // Mapear las opciones a rutas específicas
-    const routeMap: { [key: string]: string } = {
+    // Example: handle submenu item click for metricas, colectivos, rutas, paradas
+    // You can expand this logic as needed for other submenus
+    const metricasRouteMap: { [key: string]: string } = {
       'Alta Ocupación': '/admin/metrics/high-occupancy',
-      'Distribución Normal': '/admin/metrics/normal-distribution', 
+      'Distribución Normal': '/admin/metrics/normal-distribution',
       'Intervalo de Confianza': '/admin/metrics/confidence-interval',
       'Total de Pasajeros': '/admin/metrics/passengers-total',
       'Horas Pico': '/admin/metrics/rush-hour',
       'Promedio de Viaje': '/admin/metrics/travel-average'
     };
-    
-    const route = routeMap[option];
-    if (route === '/admin/metrics/confidence-interval' || 
-        route === '/admin/metrics/high-occupancy' || 
-        route === '/admin/metrics/normal-distribution' ||
-        route === '/admin/metrics/passengers-total' ||
-        route === '/admin/metrics/rush-hour' ||
-        route === '/admin/metrics/travel-average') {
+    const colectivosRouteMap: { [key: string]: string } = {
+      'Tabla de Colectivos': '/admin/colectivos/table',
+      'Crear Colectivo': '/admin/colectivos/create'
+    };
+    const rutasRouteMap: { [key: string]: string } = {
+      'Tabla de Rutas': '/admin/rutas/table',
+      'Crear Ruta': '/admin/rutas/create'
+    };
+    const paradasRouteMap: { [key: string]: string } = {
+      'Tabla de Paradas': '/admin/paradas/table'
+    };
+    let route = metricasRouteMap[option] || colectivosRouteMap[option] || rutasRouteMap[option] || paradasRouteMap[option];
+    if (route) {
       this.router.navigate([route]);
       this.currentRoute = route;
     } else {

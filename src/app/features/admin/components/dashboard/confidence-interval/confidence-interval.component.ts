@@ -1,5 +1,6 @@
 // ...existing code...
 import { Component, Inject, PLATFORM_ID, AfterViewInit, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
@@ -84,7 +85,6 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
     const max = Math.max(...data);
     const range = max - min;
     
-    // If range is very small relative to the values, add more padding
     const gracePercentage = range < (max * 0.1) ? 0.2 : 0.05;
     const grace = range * gracePercentage;
     
@@ -96,13 +96,13 @@ export class ConfidenceIntervalComponent implements AfterViewInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private http: HttpClient
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
-    // Inject repository dependency  
-    const dailyRepository = new DailyResumeRepository();
-    const monthlyRepository = new MonthlyResumeRepository();
+    const dailyRepository = new DailyResumeRepository(this.http);
+    const monthlyRepository = new MonthlyResumeRepository(this.http);
     this.getAllDailyResume = new GetAllDailyResumeUseCase(dailyRepository);
     this.getAllMonthlyResume = new GetAllMonthlyResumeUseCase(monthlyRepository);
 

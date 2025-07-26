@@ -11,6 +11,7 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
   styleUrls: ['./confidence-interval-page.component.scss']
 })
 export class ConfidenceIntervalPageComponent implements AfterViewInit {
+  token: string | null = null;
   @ViewChild(ConfidenceIntervalComponent) confidenceIntervalComponent!: ConfidenceIntervalComponent;
 
   // Initial filter data
@@ -22,6 +23,13 @@ export class ConfidenceIntervalPageComponent implements AfterViewInit {
   };
 
   constructor() {}
+
+  setToken(token: string) {
+    this.token = token;
+    if (this.confidenceIntervalComponent && 'setToken' in this.confidenceIntervalComponent) {
+      (this.confidenceIntervalComponent as any).setToken(token);
+    }
+  }
 
   ngAfterViewInit(): void {
     // Initial load with default filters

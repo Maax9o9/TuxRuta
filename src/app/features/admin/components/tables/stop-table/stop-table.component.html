@@ -1,0 +1,28 @@
+<table class="stop-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Ruta</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of stops; let i = index">
+      <td>{{ item.nombre }}</td>
+      <td>{{ item.ruta_id || '-' }}</td>
+      <td>
+        <img
+          src="delete.png"
+          alt="Eliminar"
+          class="delete-icon"
+          (click)="$event.stopPropagation(); onDeleteClick(i)"
+        />
+      </td>
+    </tr>
+  </tbody>
+</table>
+<app-confirm-delete-alert *ngIf="showConfirmDelete"
+  (cancel)="onCancelDelete()"
+  (delete)="onConfirmDelete()">
+</app-confirm-delete-alert>
+<app-delete-alert *ngIf="showDeleteAlert" (close)="onCloseDeleteAlert()"></app-delete-alert>

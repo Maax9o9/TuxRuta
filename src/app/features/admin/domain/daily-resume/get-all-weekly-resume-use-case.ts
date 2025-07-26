@@ -8,7 +8,7 @@ export class GetAllWeeklyResumeUseCase {
     try {
       const data = await this.repository.getAll();
       if (data && data.length > 0) {
-        return data.slice(0, 7); // Limitar a 7 registros
+        return data.slice(0, 7);
       }
       return [];
     } catch (error) {

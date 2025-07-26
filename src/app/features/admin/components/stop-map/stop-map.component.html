@@ -7,8 +7,12 @@
       [center]="center"
       [zoom]="zoom"
       [options]="mapOptions"
-      (mapReady)="onMapReady($event)"
-    ></google-map>
+      (mapClick)="onMapClick($event)">
+      <map-polyline *ngIf="polylinePath.length > 1 && !directionsRenderer"
+        [path]="polylinePath"
+        [options]="polylineOptions">
+      </map-polyline>
+    </google-map>
 
     <div class="map-buttons">
       <button class="stop-btn undo-btn" (click)="removeLastStop()">Eliminar Último</button>
@@ -16,5 +20,14 @@
     </div>
   </div>
 
-  <app-create-stop-form *ngIf="showStopForm" (close)="onCloseStopForm()" [token]="token" [rutaId]="rutaId" [ubicacion]="clickedLatLng ? { lat: clickedLatLng.lat, lng: clickedLatLng.lng, order: currentOrder } : null" />
+  <app-create-stop-form *ngIf="showStopForm" (cancel)="onCloseStopForm()" [token]="token" [rutaId]="rutaId" [ubicacion]="clickedLatLng ? { latitud: clickedLatLng.lat, longitud: clickedLatLng.lng, order: currentOrder } : null" />
 </ng-container>
+<div *ngIf="stopsByRoute.length > 0" class="stops-list">
+  <h3>Paradas asociadas a la ruta</h3>
+  <ul>
+    <li *ngFor="let stop of stopsByRoute">
+      <strong>{{ stop.nombre }}</strong>
+      <span>({{ stop.ubicacion.lat }}, {{ stop.ubicacion.lng }})</span>
+    </li>
+  </ul>
+</div>

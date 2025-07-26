@@ -1,6 +1,20 @@
-<div class="search-bar">
-  <div class="search-input">
-    <i class="fa fa-search"></i>
-    <input type="text" placeholder="Suchiapa" />
+<div class="search-bar" [class.expanded]="searchExpanded">
+  <div class="tabs" *ngIf="!searchExpanded">
+    <a class="tab" (click)="goToHome()">Home</a>
+    <a class="tab" (click)="goToRoutes()">Rutas</a>
+    <a class="tab" (click)="goToAboutUs()">Conócenos</a>
   </div>
+
+  <button class="search-button" (click)="toggleSearch()">
+    <img src="search-icon.png" alt="Buscar" class="search-icon" />
+  </button>
+
+  <input
+    *ngIf="searchExpanded"
+    type="text"
+    class="search-input"
+    placeholder="Buscar..."
+    [(ngModel)]="searchText"
+    [disabled]="false"
+  />
 </div>

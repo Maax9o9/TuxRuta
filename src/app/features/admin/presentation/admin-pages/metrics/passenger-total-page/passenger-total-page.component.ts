@@ -11,6 +11,7 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
   styleUrls: ['./passenger-total-page.component.scss']
 })
 export class PassengerTotalPageComponent implements AfterViewInit {
+  token: string | null = null;
   @ViewChild(PassengersTotalComponent) passengersTotalComponent!: PassengersTotalComponent;
 
   // Initial filter data
@@ -22,6 +23,13 @@ export class PassengerTotalPageComponent implements AfterViewInit {
   };
 
   constructor() {}
+
+  setToken(token: string) {
+    this.token = token;
+    if (this.passengersTotalComponent && 'setToken' in this.passengersTotalComponent) {
+      (this.passengersTotalComponent as any).setToken(token);
+    }
+  }
 
   ngAfterViewInit(): void {
     // Initial load with default filters

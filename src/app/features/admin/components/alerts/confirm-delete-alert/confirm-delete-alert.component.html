@@ -1,0 +1,11 @@
+<div class="confirm-delete-modal-backdrop">
+  <div class="confirm-delete-modal-container">
+    <button class="close-button" (click)="onCancel()">×</button>
+    <h2>¿Estás seguro de eliminar esto?</h2>
+    <p class="subtitle">Esta acción no se puede deshacer.</p>
+    <div class="button-group">
+      <button type="button" class="cancel-btn" (click)="onCancel()">Cancelar</button>
+      <button type="button" class="delete-btn" (click)="onDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>

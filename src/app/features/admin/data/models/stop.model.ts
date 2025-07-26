@@ -1,9 +1,10 @@
 
 export interface Ubicacion {
-  lat: number;
-  lng: number;
-  order: number;
-
+  lat?: number;
+  lng?: number;
+  latitud?: number;
+  longitud?: number;
+  order?: number;
 }
 
 export interface Stop {
