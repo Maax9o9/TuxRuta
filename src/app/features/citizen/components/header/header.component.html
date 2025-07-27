@@ -4,7 +4,11 @@
     <span class="logo-text">TuxRuta</span>
   </div>
   <div class="header-center">
-    <app-search-bar [disabledInput]="true"></app-search-bar>
+    <app-search-bar
+      [routes]="routes"
+      (searchTextChange)="onSearchTextChange($event)"
+      (routeSelected)="onRouteSelected($event)">
+    </app-search-bar>
   </div>
   <div class="header-actions">
     <span class="header-clock">

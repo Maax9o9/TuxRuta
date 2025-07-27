@@ -1,10 +1,24 @@
 <div class="card-container">
-  <div class="card" *ngFor="let card of cards; let i = index" [class.selected]="selectedIndex === i" (click)="selectCard(i)">
+  <div class="card" *ngFor="let route of routes; let i = index" [class.selected]="selectedIndex === i" (click)="selectCard(i)" #cardRef>
     <div class="top-row">
-      <span class="ruta">Tuxtla–Suchiapa</span>
-      <span class="asientos-disponibles">5/18</span>
+      <span class="label-title">Ruta</span>
+      <span class="info-value">{{ route.nombre }}</span>
     </div>
-    <div class="numero">2303</div>
-    <div class="descripcion">9sur–Centro Suchiapa</div>
+        <div class="descripcion">
+      <span class="label-title">Descripción</span>
+      <div class="info-value">{{ route.descripcion || 'Sin descripción' }}</div>
+    </div>
+    <div class="separator"></div>
+    <div class="colectivos">
+      <span class="label-title">Colectivos</span>
+      <div class="info-value">
+        <span *ngIf="getColectivesForRoute">
+          <ng-container *ngIf="getColectivesForRoute(route.id).length > 0; else noColectivos">
+            {{ getColectivesForRoute(route.id).length }} colectivo{{ getColectivesForRoute(route.id).length > 1 ? 's' : '' }} asociado{{ getColectivesForRoute(route.id).length > 1 ? 's' : '' }}
+          </ng-container>
+          <ng-template #noColectivos>Sin colectivos asociados</ng-template>
+        </span>
+      </div>
+    </div>
   </div>
 </div>

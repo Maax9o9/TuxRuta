@@ -6,7 +6,20 @@
   <div class="content-wrapper">
     <div class="page-layout">
       <div class="table-section">
-        <app-colective-table [token]="token"></app-colective-table>
+        <app-colective-table #tableComponent [token]="token" (showConfirmDelete)="onShowConfirmDelete($event)" (deleteSuccess)="showDeleteAlert = true"></app-colective-table>
+      </div>
+    </div>
+    <div *ngIf="showConfirmDelete" class="modal-overlay">
+      <div class="modal-center">
+        <app-confirm-delete-alert
+          (cancel)="onCancelDelete()"
+          (delete)="onConfirmDelete()">
+        </app-confirm-delete-alert>
+      </div>
+    </div>
+    <div *ngIf="showDeleteAlert" class="modal-overlay">
+      <div class="modal-center">
+        <app-delete-alert (close)="onCloseDeleteAlert()"></app-delete-alert>
       </div>
     </div>
   </div>

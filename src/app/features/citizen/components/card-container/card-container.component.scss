@@ -25,23 +25,44 @@
 }
 
  .card {
-  background-color: #FFFFFF;
-  &.selected {
-    background-color: #A7C957 !important;
-    color: #494949 !important;
-    .top-row, .numero, .ruta, .asientos-disponibles {
-      color: #494949 !important;
-    }
-    .descripcion {
-      color: #494949 !important;
-    }
+  .label-title {
+    display: inline-block;
+    font-size: 1.18rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #386641;
+    letter-spacing: 0.01em;
+    margin-right: 0.5rem;
+    vertical-align: middle;
   }
-  .descripcion {
-    color: #494949;
-    font-size: 0.9rem;
+
+  .info-value {
+    display: inline-block;
+    font-size: 1.05rem;
+    font-family: 'Poppins', sans-serif;
     font-weight: 400;
-    margin-top: 0.2rem;
+    color: #757575;
+    vertical-align: middle;
   }
+
+
+  .top-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.2rem;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .separator {
+    width: 20%;
+    height: 2px;
+    background: #444;
+    margin: 0.3rem 0 0.3rem 0.5rem;
+    border-radius: 2px;
+    opacity: 1;
+  }
+  background-color: #FFFFFF;
   border-radius: 8px;
   padding: 1rem;
   display: flex;
@@ -57,6 +78,91 @@
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   margin-left: 20px;
 
+  color: #232323;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  margin-top: 0.2rem;
+
+  .top-row {
+    font-size: 1.08rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #232323;
+    margin-bottom: 0.5rem;
+  }
+
+  .ruta {
+    font-size: 1.1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #232323;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .numero {
+    font-size: 0.98rem;
+    font-family: 'Poppins', sans-serif;
+    color: #555;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  .descripcion {
+    font-size: 0.97rem;
+    font-family: 'Poppins', sans-serif;
+    color: #444;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .colectivos {
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    color: #232323 !important;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    margin-top: 0.2rem;
+  }
+
+  .colectivo-item span {
+    color: #232323 !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 0.93rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &.selected {
+    background-color: #A7C957 !important;
+    color: #fff !important;
+    .info-value,
+    .top-row,
+    .numero,
+    .ruta,
+    .descripcion,
+    .colectivos,
+    .colectivo-item span {
+      color: #fff !important;
+    }
+    .separator {
+      background: #fff !important;
+    }
+    .label-title {
+      color: #386641 !important;
+    }
+  }
+
+  .colectivos {
+    color: #222 !important;
+  }
+
+  .colectivo-item span {
+    color: #222 !important;
+  }
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -66,32 +172,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .ruta-label,
-    .asientos-label {
-      font-size: 0.7rem;
-      color: #9E9E9E;
-      margin-bottom: 0.2rem;
-      font-weight: 400;
-    }
-
-    .asientos-disponibles {
-      background-color: #E6F4EA;
-      color: #8BC34A;
-      font-size: 0.8rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-weight: 500;
-      margin-right: 30px;
-    }
-  }
 
   .ruta {
     font-size: 1rem;

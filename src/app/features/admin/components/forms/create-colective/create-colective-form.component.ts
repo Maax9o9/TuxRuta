@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ConfirmSaveAlertComponent } from '../../alerts/confirm-save-alert/confirm-save-alert.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -14,6 +14,9 @@ import { Route } from '../../../data/models/route.model';
   styleUrls: ['./create-colective-form.component.scss']
 })
 export class CreateColectiveFormComponent {
+  @Output() confirmSave = new EventEmitter<void>();
+  @Output() cancelSave = new EventEmitter<void>();
+  @Output() colectiveSaved = new EventEmitter<void>();
   colectiveForm: FormGroup;
   alertVisible = true;
   showConfirmAlert = false;
@@ -54,9 +57,12 @@ export class CreateColectiveFormComponent {
 
   onSubmit(): void {
     if (this.colectiveForm.valid) {
-      this.showConfirmAlert = true;
+      this.confirmSave.emit();
     }
   }
+
+  // Esta función ya no se llama directamente desde el modal, sino desde la página
+  // onConfirmSave(): void { ... }
 
   onConfirmSave(): void {
     const formValue = this.colectiveForm.value;
@@ -71,18 +77,17 @@ export class CreateColectiveFormComponent {
       next: (result) => {
         this.message = 'Colectivo creado correctamente';
         this.resetForm();
-        this.showConfirmAlert = false;
+        this.colectiveSaved.emit();
       },
       error: (err) => {
         this.message = 'Error al crear el colectivo';
-        this.showConfirmAlert = false;
         console.error(err);
       }
     });
   }
 
   onCancelSave(): void {
-    this.showConfirmAlert = false;
+    this.cancelSave.emit();
   }
 
   resetForm(): void {

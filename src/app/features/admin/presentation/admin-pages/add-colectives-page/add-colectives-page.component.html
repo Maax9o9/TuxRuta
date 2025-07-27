@@ -6,11 +6,29 @@
   <div class="content-wrapper">
     <div class="page-layout">
       <div class="form-section">
-        <app-create-colective-form></app-create-colective-form>
+        <app-create-colective-form #formComponent
+          [token]="token"
+          (confirmSave)="onShowConfirmAlert()"
+          (cancelSave)="onHideConfirmAlert()"
+          (colectiveSaved)="onColectiveSaved()"
+        ></app-create-colective-form>
       </div>
       <div class="table-section">
         <app-colective-table [token]="token"></app-colective-table>
       </div>
+    </div>
+  </div>
+  <div *ngIf="showConfirmAlert" class="modal-overlay">
+    <div class="modal-center">
+      <app-confirm-save-alert
+        (cancel)="onCancelSave()"
+        (save)="onConfirmSave()">
+      </app-confirm-save-alert>
+    </div>
+  </div>
+  <div *ngIf="showSaveAlert" class="modal-overlay">
+    <div class="modal-center">
+      <app-save-alert (close)="onCloseSaveAlert()"></app-save-alert>
     </div>
   </div>
 </div>

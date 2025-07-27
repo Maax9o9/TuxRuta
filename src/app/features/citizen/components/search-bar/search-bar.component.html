@@ -15,6 +15,13 @@
     class="search-input"
     placeholder="Buscar..."
     [(ngModel)]="searchText"
+    (ngModelChange)="onSearchTextChange()"
     [disabled]="false"
+    autocomplete="off"
   />
+  <ul *ngIf="searchExpanded && filteredRoutes.length > 0" class="autocomplete-list">
+    <li *ngFor="let route of filteredRoutes" (click)="onSelectRoute(route)">
+      {{ route.nombre }}
+    </li>
+  </ul>
 </div>

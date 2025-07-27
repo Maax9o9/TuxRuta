@@ -1,7 +1,16 @@
-<div class="save-modal-backdrop">
-  <div class="save-modal-container">
+<div class="confirm-save-modal-backdrop open">
+  <div class="confirm-save-modal-container">
     <button class="close-button" (click)="onClose()">×</button>
-    <h2>¡Guardado Exitosamente!</h2>
-    <p class="subtitle">Para verificar el guardado exitoso dirígete al apartado correspondiente</p>
+    <div class="modal-content">
+      <div class="alert-header-with-icon">
+        <div class="icon-box">
+          <img src="succesful.png" alt="icon" width="28" height="28" />
+        </div>
+        <div class="alert-header-text">
+          <h2>¡Guardado Exitosamente!</h2>
+          <p class="subtitle">Para verificar el guardado exitoso dirígete al apartado correspondiente</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

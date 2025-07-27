@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 })
 export class StopRepository {
   getByRouteId(rutaId: number, token?: string): Observable<Stop[]> {
-    // Usa el endpoint específico de paradas por ruta
     return this.http.get<Stop[]>(`${environments.apiParadasPorRuta}/${rutaId}`, { headers: this.getHeaders(token) });
   }
   private apiUrl = environments.apiParadas;
@@ -22,7 +21,8 @@ export class StopRepository {
   }
 
   getAll(token?: string): Observable<Stop[]> {
-    return this.http.get<Stop[]>(this.apiUrl, { headers: this.getHeaders(token) });
+    // Usa siempre environments.apiParadas para obtener todas las paradas
+    return this.http.get<Stop[]>(environments.apiParadas, { headers: this.getHeaders(token) });
   }
 
   getById(id: number, token?: string): Observable<Stop> {

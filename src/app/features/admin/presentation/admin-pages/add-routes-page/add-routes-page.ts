@@ -2,15 +2,51 @@ import { Component, ViewChild, AfterViewInit, OnInit, OnDestroy, Inject, PLATFOR
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { GoogleMapComponent } from '../../../components/google-map/google_map.component';
 import { CreateRouteFormComponent } from '../../../components/forms/create-route-form/create-route-form.component';
+import { ConfirmSaveAlertComponent } from '../../../components/alerts/confirm-save-alert/confirm-save-alert.component';
+import { SaveAlertComponent } from '../../../components/alerts/save-alert/save-alert.component';
 
 @Component({
   selector: 'app-add-routes-page',
   standalone: true,
-  imports: [CommonModule, GoogleMapComponent, CreateRouteFormComponent],
+  imports: [CommonModule, GoogleMapComponent, CreateRouteFormComponent, ConfirmSaveAlertComponent, SaveAlertComponent],
   templateUrl: './add-routes-page.html',
   styleUrls: ['./add-routes-page.scss'],
 })
 export class AddRoutesPageComponent implements OnInit, AfterViewInit, OnDestroy {
+  showConfirmAlert = false;
+  showSaveAlert = false;
+
+  onShowConfirmAlert() {
+    this.showConfirmAlert = true;
+  }
+
+  onHideConfirmAlert() {
+    this.showConfirmAlert = false;
+  }
+
+  onConfirmSave() {
+    this.showConfirmAlert = false;
+    if (this.formComponent) {
+      this.formComponent.onConfirmSave();
+    }
+    // La alerta de guardado exitoso se mostrará cuando el form emita el evento de éxito
+  }
+
+  onCancelSave() {
+    if (this.formComponent) {
+      this.formComponent.onCancelSave();
+    }
+    this.showConfirmAlert = false;
+  }
+
+  onRouteSaved() {
+    this.showConfirmAlert = false;
+    this.showSaveAlert = true;
+  }
+
+  onCloseSaveAlert() {
+    this.showSaveAlert = false;
+  }
   @ViewChild(CreateRouteFormComponent) formComponent!: CreateRouteFormComponent;
   @ViewChild(GoogleMapComponent) mapComponent!: GoogleMapComponent;
 
