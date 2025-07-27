@@ -10,11 +10,7 @@
     <div class="page-layout">
       <!-- Filtros en la izquierda -->
       <div class="filters-section">
-        <app-metrics-filter 
-          title="Filtros de Distribución Normal"
-          [initialFilterData]="initialFilterData"
-          (filterChange)="onFilterChange($event)">
-        </app-metrics-filter>
+        <app-metrics-range-filter (filterChange)="onFilterChange($event)"></app-metrics-range-filter>
       </div>
 
       <!-- Gráfica en la derecha -->

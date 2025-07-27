@@ -2,6 +2,8 @@ import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HighOccupancyComponent } from '../../../../components/dashboard/high-occupancy/high-occupancy.component';
 import { MetricsFilterComponent, FilterData } from '../../../../components/shared/metrics-filter/metrics-filter.component';
+import { MonthlyResumeRepository } from '../../../../data/repository/monthly-resume-repository';
+import { DailyResumeRepository } from '../../../../data/repository/daily-resume-repository';
 
 @Component({
   selector: 'app-high-occupancy-page',
@@ -13,6 +15,7 @@ import { MetricsFilterComponent, FilterData } from '../../../../components/share
 export class HighOccupancyPageComponent implements AfterViewInit {
   token: string | null = null;
   @ViewChild(HighOccupancyComponent) highOccupancyComponent!: HighOccupancyComponent;
+  chartData: any; // Datos para la gráfica
 
   // Initial filter data
   initialFilterData: FilterData = {
@@ -22,7 +25,9 @@ export class HighOccupancyPageComponent implements AfterViewInit {
     selectedRoute: 1
   };
 
-  constructor() {}
+   constructor(private monthlyResumeRepository: MonthlyResumeRepository,
+      private dailyResumeRepository: DailyResumeRepository
+    ) {}
 
   setToken(token: string) {
     this.token = token;
@@ -38,34 +43,38 @@ export class HighOccupancyPageComponent implements AfterViewInit {
     }, 500);
   }
 
-  onFilterChange(filterData: FilterData): void {
-    console.log(`High Occupancy Page: Filter changed`, filterData);
-    
-    if (this.highOccupancyComponent) {
-      this.applyFilterToComponent(filterData);
-    } else {
-      console.log('High Occupancy Page: Component not available yet');
-    }
-  }
+ onFilterChange(filterData: FilterData): void {
+  console.log('ConfidenceIntervalPageComponent: Received filter data', filterData);
 
-  private applyFilterToComponent(filterData: FilterData): void {
-    const component = this.highOccupancyComponent;
-    
-    switch (filterData.filterType) {
-      case 'month':
-        console.log(`High Occupancy Page: Applying month filter - Year: ${filterData.selectedYear}, Month: ${filterData.selectedMonth}, Route: ${filterData.selectedRoute}`);
-        if (component.loadDataByMonthRange) {
-          component.loadDataByMonthRange(filterData.selectedYear, filterData.selectedMonth, filterData.selectedRoute);
-        } else if (component.switchToMonthly) {
-          component.switchToMonthly();
+  if (filterData.filterType === 'month') {
+    this.monthlyResumeRepository
+      .getByRouteId(filterData.selectedYear, filterData.selectedMonth, filterData.selectedRoute)
+      .subscribe(data => {
+        console.log('ConfidenceIntervalPageComponent: Data fetched from repository (monthly)', data);
+        this.chartData = data;
+        if (this.highOccupancyComponent) {
+          this.highOccupancyComponent.updateChartData(this.chartData);
         }
-        break;
-      case 'week':
-        console.log(`High Occupancy Page: Applying week filter - Route: ${filterData.selectedRoute}`);
-        if (component.switchToDaily) {
-          component.switchToDaily();
-        }
-        break;
+      });
+  } else if (filterData.filterType === 'daily') {
+    const day = filterData.selectedDay;
+    if (typeof day === 'number') {
+      this.dailyResumeRepository
+        .getByDateAndRoute(
+          `${filterData.selectedYear}-${filterData.selectedMonth.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
+          filterData.selectedRoute
+        )
+        .subscribe(data => {
+          console.log('ConfidenceIntervalPageComponent: Data fetched from repository (daily)', data);
+          this.chartData = data;
+          if (this.highOccupancyComponent) {
+            this.highOccupancyComponent.updateChartData(this.chartData);
+          }
+        });
+    } else {
+      console.warn('ConfidenceIntervalPageComponent: selectedDay is undefined for daily filter');
     }
   }
+}
+
 }

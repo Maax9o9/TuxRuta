@@ -1,35 +1,8 @@
 <div class="filters-section">
   <h2>{{ title }}</h2>
   <div class="filters-container">
-    
-    <!-- Tipo de Filtro -->
-    <div class="filter-group">
-      <label for="filterType">Tipo de Filtro:</label>
-      <div class="custom-dropdown">
-        <button class="dropdown-button" (click)="toggleDropdown('filterType')">
-          <span>{{ filterType === 'month' ? 'Por Mes' : 'Diario' }}</span>
-          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('filterType')">▼</i>
-        </button>
-        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('filterType')">
-          <li class="dropdown-item">
-            <button class="dropdown-option" 
-                    [class.active]="filterType === 'month'" 
-                    (click)="selectFilterType('month')">
-              Por Mes
-            </button>
-          </li>
-          <li class="dropdown-item">
-            <button class="dropdown-option" 
-                    [class.active]="filterType === 'daily'" 
-                    (click)="selectFilterType('daily')">
-              Diario
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
 
-    <!-- Año (siempre visible) -->
+    <!-- Año -->
     <div class="filter-group">
       <label for="yearSelect">Año:</label>
       <div class="custom-dropdown">
@@ -39,8 +12,8 @@
         </button>
         <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('year')">
           <li class="dropdown-item" *ngFor="let year of availableYears">
-            <button class="dropdown-option" 
-                    [class.active]="selectedYear === year" 
+            <button class="dropdown-option"
+                    [class.active]="selectedYear === year"
                     (click)="selectYear(year)">
               {{ year }}
             </button>
@@ -49,9 +22,9 @@
       </div>
     </div>
 
-    <!-- Mes (solo para filtro mensual) -->
-<!-- Mes (para filtro mensual y diario) -->
-<div class="filter-group" *ngIf="filterType === 'month' || filterType === 'daily'">      <label for="monthSelect">Mes:</label>
+    <!-- Mes -->
+    <div class="filter-group">
+      <label for="monthSelect">Mes:</label>
       <div class="custom-dropdown">
         <button class="dropdown-button" (click)="toggleDropdown('month')">
           <span>{{ getSelectedMonthName() }}</span>
@@ -59,8 +32,8 @@
         </button>
         <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('month')">
           <li class="dropdown-item" *ngFor="let month of availableMonths">
-            <button class="dropdown-option" 
-                    [class.active]="selectedMonth === month.value" 
+            <button class="dropdown-option"
+                    [class.active]="selectedMonth === month.value"
                     (click)="selectMonth(month.value)">
               {{ month.name }}
             </button>
@@ -69,19 +42,39 @@
       </div>
     </div>
 
-    <!-- Día (solo para filtro diario) -->
-    <div class="filter-group" *ngIf="filterType === 'daily'">
-      <label for="daySelect">Día:</label>
+    <!-- Día de inicio -->
+    <div class="filter-group">
+      <label for="startDaySelect">Día de inicio:</label>
       <div class="custom-dropdown">
-        <button class="dropdown-button" (click)="toggleDropdown('day')">
-          <span>{{ selectedDay || 'Seleccionar Día' }}</span>
-          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('day')">▼</i>
+        <button class="dropdown-button" (click)="toggleDropdown('startDay')">
+          <span>{{ selectedStartDay || 'Seleccionar Día' }}</span>
+          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('startDay')">▼</i>
         </button>
-        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('day')">
+        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('startDay')">
           <li class="dropdown-item" *ngFor="let day of availableDays">
-            <button class="dropdown-option" 
-                    [class.active]="selectedDay === day" 
-                    (click)="selectDay(day)">
+            <button class="dropdown-option"
+                    [class.active]="selectedStartDay === day"
+                    (click)="selectStartDay(day)">
+              {{ day }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Día final -->
+    <div class="filter-group">
+      <label for="endDaySelect">Día final:</label>
+      <div class="custom-dropdown">
+        <button class="dropdown-button" (click)="toggleDropdown('endDay')">
+          <span>{{ selectedEndDay || 'Seleccionar Día' }}</span>
+          <i class="dropdown-arrow" [class.expanded]="isDropdownOpen('endDay')">▼</i>
+        </button>
+        <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('endDay')">
+          <li class="dropdown-item" *ngFor="let day of availableDays">
+            <button class="dropdown-option"
+                    [class.active]="selectedEndDay === day"
+                    (click)="selectEndDay(day)">
               {{ day }}
             </button>
           </li>
@@ -99,8 +92,8 @@
         </button>
         <ul class="dropdown-menu" [class.expanded]="isDropdownOpen('route')">
           <li class="dropdown-item" *ngFor="let route of availableRoutes">
-            <button class="dropdown-option" 
-                    [class.active]="selectedRoute === route.id" 
+            <button class="dropdown-option"
+                    [class.active]="selectedRoute === route.id"
                     (click)="selectRoute(route.id)">
               {{ route.nombre }}
             </button>

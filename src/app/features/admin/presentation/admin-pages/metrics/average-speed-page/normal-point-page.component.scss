@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-html, body, :host, .travel-promedy-page-container, .content-wrapper {
+html, body, :host, .normal-point-page-container, .content-wrapper {
   overflow: hidden !important;
   min-height: 0 !important;
   height: 100vh !important;
@@ -31,9 +31,6 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
     font-weight: 500;
     color: #A7C957;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    margin-left: 0;
-    margin-right: auto;
-    text-align: left;
   }
 }
 
@@ -48,11 +45,12 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
   box-sizing: border-box;
 }
 
-.travel-promedy-page-container {
+.normal-point-page-container {
   position: relative;
   width: 100%;
   min-height: calc(100vh - 80px);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: #212121;
 }
 
@@ -64,7 +62,6 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
   min-height: 100%;
   background: rgba(0, 0, 0, 0.3); 
   z-index: 1;
-  pointer-events: none;
 }
 
 .content-wrapper {
@@ -74,46 +71,45 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
   min-height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  align-items: flex-start;
   padding: 2rem;
-  box-sizing: border-box;
+  padding-top: 2rem;
 }
-
 
 .page-layout {
   display: flex;
-  gap: rem; 
+  gap: 2rem;
   width: 100%;
   max-width: 1400px;
-  align-items: stretch;
+  align-items: flex-start;
 }
 
 .filters-section {
   flex: 0 0 350px;
   min-width: 350px;
-  max-width: 350px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
 }
 
-
+.chart-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .chart-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 70px;
+
   background: #212121;
   border-radius: 18px;
-  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  padding: 3.5rem 2.5rem 2.5rem 2.5rem;
   box-shadow: 0 8px 32px 0 rgba(76, 175, 80, 0.10), 0 1.5px 8px 0 rgba(56, 142, 60, 0.08);
   border: 2px solid #b2f5a5;
 
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   min-height: 440px;
   position: relative;
   z-index: 3;
@@ -141,8 +137,6 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
     flex: none;
     min-width: auto;
     width: 100%;
-    max-width: 100%;
-    height: auto;
   }
   .content-wrapper {
     padding: 1.5rem;

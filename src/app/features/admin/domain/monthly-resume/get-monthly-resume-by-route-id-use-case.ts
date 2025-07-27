@@ -9,7 +9,7 @@ export class GetMonthlyResumeByRouteIdUseCase {
 
   constructor(private monthlyResumeRepository: MonthlyResumeRepository) {}
 
-  execute(routeId: number): Promise<MonthlyResume[] | null> {
+  execute(year: number, month: number, routeId: number): Promise<MonthlyResume[] | null> {
     console.log('Monthly UseCase: Getting monthly resume by route ID:', routeId);
     return new Promise((resolve) => {
       if (!this.monthlyResumeRepository.getByRouteId) {
@@ -17,7 +17,7 @@ export class GetMonthlyResumeByRouteIdUseCase {
         resolve(null);
         return;
       }
-      this.monthlyResumeRepository.getByRouteId(routeId).subscribe({
+      this.monthlyResumeRepository.getByRouteId(year, month, routeId).subscribe({
         next: (response) => {
           console.log('Monthly UseCase: Found monthly resumes for route:', response);
           resolve(response && response.length > 0 ? response : null);

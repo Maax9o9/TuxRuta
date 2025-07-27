@@ -6,15 +6,13 @@
 <div class="travel-promedy-page-container">
   <div class="overlay"></div>
   <div class="content-wrapper">
-    
     <div class="page-layout">
       <!-- Filtros en la izquierda -->
       <div class="filters-section">
-        <app-metrics-filter 
+        <app-metrics-range-filter 
           title="Filtros de Promedio de Viaje"
-          [initialFilterData]="initialFilterData"
           (filterChange)="onFilterChange($event)">
-        </app-metrics-filter>
+        </app-metrics-range-filter>
       </div>
 
       <!-- Gráfica en la derecha -->

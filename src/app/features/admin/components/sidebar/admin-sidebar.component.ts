@@ -99,7 +99,7 @@ export class AdminSidebarComponent {
     // You can expand this logic as needed for other submenus
     const metricasRouteMap: { [key: string]: string } = {
       'Alta Ocupación': '/admin/metrics/high-occupancy',
-      'Distribución Normal': '/admin/metrics/normal-distribution',
+      'Velocidad Promedio': '/admin/metrics/average-speed',
       'Intervalo de Confianza': '/admin/metrics/confidence-interval',
       'Total de Pasajeros': '/admin/metrics/passengers-total',
       'Horas Pico': '/admin/metrics/rush-hour',

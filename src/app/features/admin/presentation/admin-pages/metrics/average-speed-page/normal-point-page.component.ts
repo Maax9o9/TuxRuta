@@ -1,20 +1,22 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RushHourComponent } from '../../../../components/dashboard/rush-hour/rush-hour.component';
+import { NormalDistributionComponent } from '../../../../components/dashboard/average-speed/normal-point.component';
 import { MetricsRangeFilterComponent,FilterData} from '../../../../components/shared/metrics-filter-range/metrics-filter-range.component';
 import { DailyResumeRepository } from '../../../../data/repository/daily-resume-repository';
 
 @Component({
-  selector: 'app-rush-hour-page',
+  selector: 'app-normal-point-page',
   standalone: true,
-  imports: [CommonModule, RushHourComponent, MetricsRangeFilterComponent],
-  templateUrl: './rush-hour-page.component.html',
-  styleUrls: ['./rush-hour-page.component.scss']
+  imports: [CommonModule, NormalDistributionComponent, MetricsRangeFilterComponent],
+  templateUrl: './normal-point-page.component.html',
+  styleUrls: ['./normal-point-page.component.scss']
 })
-export class RushHourPageComponent implements AfterViewInit {
+export class AverageSpeedPageComponent implements AfterViewInit {
   token: string | null = null;
-  @ViewChild(RushHourComponent) rushHourComponent!: RushHourComponent;
-  chartData: any; // Datos para la gráfica
+  @ViewChild(NormalDistributionComponent) normalDistributionComponent!: NormalDistributionComponent;
+ chartData: any; // Datos para la gráfica
+
+  // Initial filter data
   initialFilterData: FilterData = {
     selectedYear: 2024,
     selectedMonth: 1,
@@ -27,18 +29,18 @@ export class RushHourPageComponent implements AfterViewInit {
 
   setToken(token: string) {
     this.token = token;
-    if (this.rushHourComponent && 'setToken' in this.rushHourComponent) {
-      (this.rushHourComponent as any).setToken(token);
+    if (this.normalDistributionComponent && 'setToken' in this.normalDistributionComponent) {
+      (this.normalDistributionComponent as any).setToken(token);
     }
   }
 
   ngAfterViewInit(): void {
+    // Initial load with default filters
     setTimeout(() => {
       this.onFilterChange(this.initialFilterData);
     }, 500);
   }
-
-onFilterChange(filterData: FilterData): void {
+  onFilterChange(filterData: FilterData): void {
   console.log('NormalPointPageComponent: Received filter data', filterData);
 
   if (
@@ -60,8 +62,8 @@ onFilterChange(filterData: FilterData): void {
       .subscribe(data => {
         console.log('NormalPointPageComponent: Data fetched from repository (range)', data);
         this.chartData = data;
-        if (this.rushHourComponent) {
-          this.rushHourComponent.updateChartData(this.chartData);
+        if (this.normalDistributionComponent) {
+          this.normalDistributionComponent.updateChartData(this.chartData);
         }
       });
   } else {
