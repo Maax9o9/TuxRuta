@@ -1,29 +1,11 @@
-<div *ngIf="isBrowser">
-  <h3>Probabilidad de Ocupación Alta</h3>
-  <div class="chart-container">
-    <canvas baseChart
-            [data]="chartData"
-            [options]="chartOptions"
-            [type]="chartType">
-    </canvas>
-  </div>
-  <div *ngIf="isDataLoaded" class="summary">
-    <div class="summary-info">
-      <div class="info-item">
-        <span class="label high-label">Alta ocupación:</span>
-        <span class="value">12 pasajeros</span>
-      </div>
-    </div>
-    <div class="summary-item high">
-      <span class="indicator"></span>
-      <span class="label high-label">Alta Ocupación: {{ (averageProbability * 100).toFixed(1) }}%</span>
-    </div>
-    <div class="summary-item normal">
-      <span class="indicator"></span>
-      <span class="label normal-label">Ocupación Normal: {{ (100 - (averageProbability * 100)).toFixed(1) }}%</span>
-    </div>
-  </div>
+<h2 class="chart-title">Probabilidad de Ocupación Alta</h2>
+<div class="chart-container">
+  <canvas baseChart
+    [data]="barChartData"
+    [options]="barChartOptions"
+    [type]="barChartType">
+  </canvas>
 </div>
-<div *ngIf="!isBrowser">
-  <p>Gráfico no disponible en servidor</p>
+<div class="probability-label">
+  <span>{{ (probability * 100) | number:'1.0-2' }}%</span>
 </div>

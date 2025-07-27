@@ -48,8 +48,8 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/presentation/admin-pages/metrics/high-ocupancy-page/high-occupancy-page.component').then(m => m.HighOccupancyPageComponent)
       },
       {
-        path: 'metrics/normal-distribution',
-        loadComponent: () => import('./features/admin/presentation/admin-pages/metrics/normal-point-page/normal-point-page.component').then(m => m.NormalPointPageComponent)
+        path: 'metrics/average-speed',
+        loadComponent: () => import('./features/admin/presentation/admin-pages/metrics/average-speed-page/normal-point-page.component').then(m => m.AverageSpeedPageComponent)
       },
       {
         path: 'metrics/passengers-total',

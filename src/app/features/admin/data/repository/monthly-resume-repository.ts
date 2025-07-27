@@ -2,35 +2,23 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MonthlyResume } from '../models/monthly-comparative.model';
+import { environments } from '../../../../../core/enviroments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MonthlyResumeRepository {
-  getByRouteId(routeId: number): Observable<MonthlyResume[]> {
-    return this.http.get<MonthlyResume[]>(`${this.apiUrl}?routeId=${routeId}`);
-  }
-  private apiUrl = 'https://api.example.com/monthly-resume'; 
+  private apiUrl = environments.apiMetricas;
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<MonthlyResume[]> {
-    return this.http.get<MonthlyResume[]>(this.apiUrl);
-  }
+  getByRouteId(year: number, month: number, routeId: number): Observable<MonthlyResume[]> {
+    // Construir la URL con los parámetros año, mes y ruta_id
+    const formattedMonth = month.toString().padStart(2, '0'); // Asegura que el mes tenga dos dígitos
 
-  getByYear(year: number): Observable<MonthlyResume[]> {
-    return this.http.get<MonthlyResume[]>(`${this.apiUrl}?year=${year}`);
-  }
+    console.log(`Fetching data for año: ${year}, mes: ${formattedMonth}, ruta_id: ${routeId}`);
 
-  getByMonthRange(year: number, month: number): Observable<MonthlyResume[]> {
-    return this.http.get<MonthlyResume[]>(`${this.apiUrl}?year=${year}&month=${month}`);
-  }
-
-  getById(id: number): Observable<MonthlyResume> {
-    return this.http.get<MonthlyResume>(`${this.apiUrl}/${id}`);
-  }
-
-  delete(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    // Realizar la solicitud GET con los parámetros 'año', 'mes' y 'ruta_id'
+    return this.http.get<MonthlyResume[]>(`${this.apiUrl}?año=${year}&mes=${formattedMonth}&ruta_id=${routeId}`);
   }
 }

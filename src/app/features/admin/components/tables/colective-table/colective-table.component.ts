@@ -9,7 +9,7 @@ import { Colective } from '../../../data/models/colective.model';
 @Component({
   selector: 'app-colective-table',
   standalone: true,
-  imports: [CommonModule, ConfirmDeleteAlertComponent, DeleteAlertComponent],
+  imports: [CommonModule, DeleteAlertComponent],
   templateUrl: './colective-table.component.html',
   styleUrls: ['./colective-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default

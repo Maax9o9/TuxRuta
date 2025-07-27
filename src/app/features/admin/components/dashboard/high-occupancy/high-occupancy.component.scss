@@ -1,120 +1,33 @@
-.summary-info {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: rgba(167, 201, 87, 0.1);
-  border-radius: 8px;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.info-item .label {
-  font-size: 0.8rem;
-  color: #ffffffcc;
-  font-weight: 500;
-}
-
-.info-item .value {
-  font-size: 1rem;
-  color: #ffffff;
-  font-weight: 600;
-}
-:host {
-  display: block;
-  width: 290px;
-  max-width: 290px;
-  margin: auto;
-  padding: 1rem;
-  background-color: #212121;
-  border: 1px solid #b2f5a5;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Poppins', sans-serif;
-  color: #fff;
-}
-
-canvas {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 270px;
-  max-height: 210px;
-  display: block !important;
-  margin: auto;
-  visibility: visible !important;
-  position: relative !important;
-}
-
-h2.chart-title {
-  font-size: 1.2rem;
-  color: #ffffffcc;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-h3 {
-  font-size: 1.2rem;
-  color: #ffffffcc;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+.chart-title {
   text-align: center;
-}
-
-p {
-  color: #ffffffcc;
+  color: #b2f5a5;
   margin-bottom: 1rem;
-  text-align: center;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .chart-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 80px;
+  background: #212121;
+  border: 1px solid #b2f5a5;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.probability-label {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4caf50; // Verde material principal
+}
+
+// Opcional: puedes agregar un efecto de sombra o hover si lo deseas
+.chart-container {
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.08);
+  height: 200px;
   width: 100%;
-  max-width: 270px;
-  height: 210px;
-  margin: 0 auto;
-  position: relative;
-  padding: 0.5rem 0;
-}
-
-.summary {
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.summary-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  
-  .indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  
-  &.high .indicator {
-    background-color: #386641;
-  }
-  
-  &.normal .indicator {
-    background-color: #6A994E;
-  }
-  
-  .label {
-    font-weight: 500;
-    color: #ffffffcc;
-  }
 }
