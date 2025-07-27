@@ -1,6 +1,7 @@
 $verde-busqueda: #2f5d38;
 $stretch-transition: all 2.4s cubic-bezier(0.77, 0, 0.175, 1); 
 
+
 .search-bar {
   display: flex;
   align-items: center;
@@ -14,6 +15,8 @@ $stretch-transition: all 2.4s cubic-bezier(0.77, 0, 0.175, 1);
   transition: $stretch-transition;
   overflow: hidden;
   user-select: none;
+  min-height: 48px; // Fija el alto mínimo para evitar saltos
+  height: 48px; // Fija el alto para ambos estados
 
 
   .search-button {
@@ -95,5 +98,7 @@ $stretch-transition: all 2.4s cubic-bezier(0.77, 0, 0.175, 1);
       opacity: 1;
       min-width: 140px; // Suaviza el crecimiento inicial
     }
+    min-height: 48px;
+    height: 48px;
   }
 }

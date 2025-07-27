@@ -18,7 +18,7 @@ export class AdminSidebarComponent {
     metricas: 'metricas.png', 
     colectivos: 'colectivo1.png', 
     rutas: 'rutas.png', 
-    paradas: '', 
+    paradas: 'station.png', 
     logout: '' 
   };
 

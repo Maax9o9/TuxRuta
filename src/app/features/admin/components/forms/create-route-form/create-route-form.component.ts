@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ConfirmSaveAlertComponent } from '../../alerts/confirm-save-alert/confirm-save-alert.component';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,10 @@ import { Subscription } from 'rxjs';
   styleUrl: './create-route-form.component.scss'
 })
 export class CreateRouteFormComponent implements OnInit {
+
+  @Output() confirmSave = new EventEmitter<void>();
+  @Output() cancelSave = new EventEmitter<void>();
+  @Output() routeSaved = new EventEmitter<void>();
 
   routeForm: FormGroup;
   isSubmitting = false;
@@ -144,6 +148,7 @@ export class CreateRouteFormComponent implements OnInit {
   onSubmit(): void {
     if (this.routeForm.valid && this.canSave) {
       this.showConfirmAlert = true;
+      this.confirmSave.emit();
     } else {
       Object.keys(this.routeForm.controls).forEach(key => {
         this.routeForm.get(key)?.markAsTouched();
@@ -177,6 +182,8 @@ export class CreateRouteFormComponent implements OnInit {
           if (typeof window !== 'undefined' && (window as any).clearRouteFromMap) {
             (window as any).clearRouteFromMap();
           }
+          this.showConfirmAlert = false;
+          this.routeSaved.emit();
           setTimeout(() => {
             this.submitSuccess = false;
             this.createdRoute = null;
@@ -185,9 +192,9 @@ export class CreateRouteFormComponent implements OnInit {
           this.submitError = true;
           this.errorMessage = 'Error al crear la ruta. Por favor, intenta nuevamente.';
           console.error('CreateRouteFormComponent: Error al crear la ruta');
+          this.showConfirmAlert = false;
         }
         this.isSubmitting = false;
-        this.showConfirmAlert = false;
       },
       error: (error) => {
         this.submitError = true;
@@ -201,6 +208,7 @@ export class CreateRouteFormComponent implements OnInit {
 
   onCancelSave(): void {
     this.showConfirmAlert = false;
+    this.cancelSave.emit();
   }
 
   clearMessages(): void {

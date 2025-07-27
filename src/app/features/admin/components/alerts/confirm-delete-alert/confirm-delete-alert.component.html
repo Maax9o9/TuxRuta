@@ -1,8 +1,17 @@
-<div class="confirm-delete-modal-backdrop">
+<div class="confirm-delete-modal-backdrop open">
   <div class="confirm-delete-modal-container">
     <button class="close-button" (click)="onCancel()">×</button>
-    <h2>¿Estás seguro de eliminar esto?</h2>
-    <p class="subtitle">Esta acción no se puede deshacer.</p>
+    <div class="modal-content">
+      <div class="alert-header-with-icon">
+        <div class="icon-box">
+          <img src="confirm.png" alt="icon" width="28" height="28" />
+        </div>
+        <div class="alert-header-text">
+          <h2>¿Estás seguro de eliminar esto?</h2>
+          <p class="subtitle">Esta acción no se puede deshacer.</p>
+        </div>
+      </div>
+    </div>
     <div class="button-group">
       <button type="button" class="cancel-btn" (click)="onCancel()">Cancelar</button>
       <button type="button" class="delete-btn" (click)="onDelete()">Eliminar</button>

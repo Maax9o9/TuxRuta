@@ -1,29 +1,31 @@
-<app-delete-alert *ngIf="showDeleteAlert" (close)="onCloseDeleteAlert()"></app-delete-alert>
-<table class="colective-table">
-  <thead>
-    <tr>
-      <th>Colectivo</th>
-      <th>Ruta</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Visual log removed -->
-    <tr *ngFor="let item of colectivos; let i = index">
-      <td>{{ item.matricula }}</td>
-      <td>{{ item.ruta_id }}</td>
-      <td>
-        <img
-          src="delete.png"
-          alt="Eliminar"
-          class="delete-icon"
-          (click)="onDeleteClick(i)"
-        />
-      </td>
-    </tr>
-  </tbody>
-</table>
-<app-confirm-delete-alert *ngIf="showConfirmDelete"
-  (cancel)="onCancelDelete()"
-  (delete)="onConfirmDelete()">
-</app-confirm-delete-alert>
+<div class="colective-table-wrapper">
+  <table class="colective-table">
+    <thead>
+      <tr>
+        <th>Colectivo</th>
+        <th>Ruta</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of colectivos; let i = index">
+        <td>{{ item.matricula }}</td>
+        <td>{{ item.ruta_id }}</td>
+        <td>
+          <img
+            src="delete.png"
+            alt="Eliminar"
+            class="delete-icon"
+            (click)="onDeleteClick(i)"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="showDeleteAlert" class="delete-alert-backdrop open">
+    <div class="delete-modal-container">
+      <app-delete-alert (close)="onCloseDeleteAlert()"></app-delete-alert>
+    </div>
+  </div>
+</div>

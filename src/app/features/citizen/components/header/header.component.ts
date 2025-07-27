@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import type { Route } from '../../../admin/data/models/route.model';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,10 @@ export class HeaderComponent {
   currentTime: string = '';
 
   private timer: any;
+
+  @Input() routes: Route[] = [];
+  @Output() searchTextChange = new EventEmitter<string>();
+  @Output() routeSelected = new EventEmitter<Route>();
 
   constructor() {
     this.updateClock();
@@ -30,5 +35,11 @@ export class HeaderComponent {
   private updateClock() {
     const now = new Date();
     this.currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  onSearchTextChange(event: string) {
+    this.searchTextChange.emit(event);
+  }
+  onRouteSelected(route: Route) {
+    this.routeSelected.emit(route);
   }
 }

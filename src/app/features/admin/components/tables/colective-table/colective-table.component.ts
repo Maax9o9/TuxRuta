@@ -1,5 +1,6 @@
+
 import { DeleteAlertComponent } from '../../alerts/delete-alert/delete-alert.component';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { ConfirmDeleteAlertComponent } from '../../alerts/confirm-delete-alert/confirm-delete-alert.component';
 import { CommonModule } from '@angular/common';
 import { ColectiveRepository } from '../../../data/repository/colective-repository';
@@ -14,8 +15,22 @@ import { Colective } from '../../../data/models/colective.model';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ColectiveTableComponent implements OnInit, OnChanges {
-  showConfirmDelete = false;
   showDeleteAlert = false;
+
+  setDeleteAlert(open: boolean) {
+    this.showDeleteAlert = open;
+    if (open) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+  }
+
+  onCloseDeleteAlert() {
+    this.setDeleteAlert(false);
+  }
+  @Output() showConfirmDelete = new EventEmitter<number>();
+  @Output() deleteSuccess = new EventEmitter<void>();
   indexToDelete: number | null = null;
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['token'] && !changes['token'].firstChange) {
@@ -58,12 +73,28 @@ export class ColectiveTableComponent implements OnInit, OnChanges {
   }
 
   onDeleteClick(index: number) {
+    this.showConfirmDelete.emit(index);
+  }
+
+  // Llamado desde la página para eliminar
+  onConfirmDeleteFromPage(index: number) {
     this.indexToDelete = index;
-    this.showConfirmDelete = true;
+    if (this.indexToDelete !== null) {
+      const id = this.colectivos[this.indexToDelete].id;
+      const tokenToUse = this.getToken();
+      this.repository.delete(id, tokenToUse).subscribe({
+        next: (res) => {
+          this.loadColectivos();
+          this.setDeleteAlert(true);
+        },
+        error: (err) => {
+        }
+      });
+    }
   }
 
   onCancelDelete() {
-    this.showConfirmDelete = false;
+    // El control del modal ahora lo maneja la página
     this.indexToDelete = null;
   }
 
@@ -74,19 +105,13 @@ export class ColectiveTableComponent implements OnInit, OnChanges {
       this.repository.delete(id, tokenToUse).subscribe({
         next: (res) => {
           this.loadColectivos();
-          this.showConfirmDelete = false;
+          this.setDeleteAlert(true);
           this.indexToDelete = null;
-          this.showDeleteAlert = true;
         },
         error: (err) => {
-          this.showConfirmDelete = false;
           this.indexToDelete = null;
         }
       });
     }
-  }
-
-  onCloseDeleteAlert() {
-    this.showDeleteAlert = false;
   }
 }

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { RouteRepository } from '../../../data/repository/route-repository';
 import { Route } from '../../../data/models/route.model';
+import { StopRepository } from '../../../data/repository/stop-repository';
 
 @Component({
   selector: 'app-route-table',
@@ -14,6 +15,7 @@ import { Route } from '../../../data/models/route.model';
   styleUrls: ['./route-table.component.scss']
 })
 export class RouteTableComponent implements OnInit {
+  paradasPorRuta: { [rutaId: number]: number } = {};
   showConfirmDelete = false;
   showDeleteAlert = false;
   indexToDelete: number | null = null;
@@ -22,7 +24,7 @@ export class RouteTableComponent implements OnInit {
   rutas: Route[] = [];
   selectedIndex: number | null = null;
 
-  constructor(private repository: RouteRepository, private cdr: ChangeDetectorRef) {}
+  constructor(private repository: RouteRepository, private stopRepository: StopRepository, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     if (!this.token) {
@@ -40,6 +42,24 @@ export class RouteTableComponent implements OnInit {
     this.repository.getAll().subscribe({
       next: (data) => {
         this.rutas = data;
+        data.forEach(ruta => {
+          this.stopRepository.getByRouteId(ruta.id, tokenToUse).subscribe({
+            next: (stops) => {
+              let stopsArr: any[] = [];
+              if (Array.isArray(stops)) {
+                stopsArr = stops;
+              } else if (stops && typeof stops === 'object' && 'paradas' in stops && Array.isArray((stops as any).paradas)) {
+                stopsArr = (stops as any).paradas;
+              }
+              this.paradasPorRuta[ruta.id] = stopsArr.length;
+              this.cdr.detectChanges();
+            },
+            error: (err) => {
+              this.paradasPorRuta[ruta.id] = 0;
+              this.cdr.detectChanges();
+            }
+          });
+        });
         this.cdr.detectChanges();
       },
       error: (err) => {

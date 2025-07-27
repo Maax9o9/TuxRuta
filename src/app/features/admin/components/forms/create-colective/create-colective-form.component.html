@@ -1,4 +1,4 @@
-<form [formGroup]="colectiveForm" (ngSubmit)="onSubmit()" class="create-route-form-container route-form">
+<form [formGroup]="colectiveForm" (ngSubmit)="onSubmit()" class="create-route-form-container route-form" autocomplete="off">
   <div class="messages-container" *ngIf="alertVisible">
     <div class="alert" [ngClass]="'alert-' + getAlertType()">
       <div class="alert-icon">
@@ -54,9 +54,6 @@
     </button>
   </div>
 
-  <app-confirm-save-alert *ngIf="showConfirmAlert"
-    (cancel)="onCancelSave()"
-    (save)="onConfirmSave()">
-  </app-confirm-save-alert>
+
 
 </form>

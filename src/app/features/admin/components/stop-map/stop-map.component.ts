@@ -40,8 +40,9 @@ export class StopMapComponent implements OnInit, AfterViewInit {
   };
   directionsRenderer: google.maps.DirectionsRenderer | null = null;
   onMapClick(event: google.maps.MapMouseEvent) {
-    console.log('[ANGULAR mapClick]', event, event.latLng ? event.latLng.toJSON() : null, 'showStopForm:', this.showStopForm);
+    console.log('[ANGULAR mapClick] CLICK en el mapa:', event, event.latLng ? event.latLng.toJSON() : null, 'showStopForm:', this.showStopForm);
     if (event.latLng && !this.showStopForm) {
+      console.log('[ANGULAR mapClick] Llamando a addStopMarker con:', event.latLng.toJSON());
       this.addStopMarker(event.latLng);
     }
   }
@@ -49,7 +50,7 @@ export class StopMapComponent implements OnInit, AfterViewInit {
   @Input() rutaId: number | null = null;
   isBrowser = false;
   zoom = 15;
-  center: google.maps.LatLngLiteral = { lat: 16.7531, lng: -93.1156 }; // Se actualizará a la ubicación del usuario si se permite
+  center: google.maps.LatLngLiteral = { lat: 16.7531, lng: -93.1156 };
   geolocationDenied: boolean = false;
 
   @ViewChild('mapElement', { static: false }) mapElement!: GoogleMap;
@@ -421,6 +422,7 @@ export class StopMapComponent implements OnInit, AfterViewInit {
       console.log('[addStopMarker] Ignorado: modal ya abierto');
       return;
     }
+    console.log('[addStopMarker] Se va a mostrar el formulario de parada. Antes showStopForm:', this.showStopForm);
     const coords = latLng instanceof google.maps.LatLng
       ? { lat: latLng.lat(), lng: latLng.lng() }
       : latLng;
@@ -438,6 +440,7 @@ export class StopMapComponent implements OnInit, AfterViewInit {
     this.tempMarkers.push(tempMarker);
     this.clickedLatLng = coords;
     this.showStopForm = true;
+    console.log('[addStopMarker] showStopForm ahora es true');
     if (!this.routePoints || this.routePoints.length === 0) {
       const allCoords = [...this.stopMarkers, ...this.tempMarkers].map((m: any) => {
         const pos = m.position as google.maps.LatLng | google.maps.LatLngLiteral;

@@ -1,3 +1,4 @@
+
 import {
   Component,
   Inject,
@@ -6,14 +7,19 @@ import {
   OnDestroy,
   ViewChild,
   AfterViewInit,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Input
 } from '@angular/core';
+import type { Route } from '../../../admin/data/models/route.model';
+import { Stop } from '../../../admin/data/models/stop.model';
+import { StopRepository } from '../../../admin/data/repository/stop-repository';
+import { environments } from '../../../../../core/enviroments';
 import {
   CommonModule,
   isPlatformBrowser
 } from '@angular/common';
 import { GoogleMapsModule, GoogleMap } from '@angular/google-maps';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-citizen-map',
@@ -23,6 +29,20 @@ import { Subscription, interval } from 'rxjs';
   styleUrls: ['./citizen-map.component.scss'],
 })
 export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
+  private _selectedRoute: Route | null = null;
+  @Input() set selectedRoute(route: Route | null) {
+    this._selectedRoute = route;
+    this.updateRoutePolyline();
+    if (route && Array.isArray((route as any).points) && (route as any).points.length > 0) {
+      const firstPoint = (route as any).points[0];
+      if (firstPoint && typeof firstPoint.lat === 'number' && typeof firstPoint.lng === 'number' && this.mapInstance) {
+        this.mapInstance.setCenter({ lat: firstPoint.lat, lng: firstPoint.lng });
+      }
+    }
+  }
+  get selectedRoute(): Route | null {
+    return this._selectedRoute;
+  }
   isBrowser = false;
   zoom = 15;
   center: google.maps.LatLngLiteral = { lat: -17.3935, lng: -66.1570 }; // Cochabamba center
@@ -45,19 +65,26 @@ export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('mapElement', { static: false }) mapElement!: GoogleMap;
 
   public mapInstance!: google.maps.Map;
-  private combiMarker?: google.maps.marker.AdvancedMarkerElement;
+  // Marcadores de combis en tiempo real por ruta seleccionada
+  private combiMarkers: { [combiId: string]: google.maps.marker.AdvancedMarkerElement } = {};
+  private combisByRoute: any[] = []; // [{ id, lat, lng, ... }]
+  private ws?: WebSocket;
+  // wsUrl ahora viene de environments
   private subscription?: Subscription;
-  private simulationSubscription?: Subscription;
+  // private simulationSubscription?: Subscription;
   
-  // Propiedades para la simulación de la combi
   private routePolyline?: google.maps.Polyline;
+  private directionsRenderer?: google.maps.DirectionsRenderer;
   private routeStops: google.maps.LatLngLiteral[] = [];
-  private currentStopIndex = 0;
-  private isSimulationRunning = false;
+  private stopMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
+  private stopsByRoute: Stop[] = [];
+  // private currentStopIndex = 0;
+  // private isSimulationRunning = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private stopRepository: StopRepository
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -145,13 +172,11 @@ export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
     
     setTimeout(() => {
       console.log('⚙️ CitizenMap: Configurando mapa...');
-      this.addCombiMarker();
+      this.clearCombiMarkers();
+      this.connectCombiWebSocket();
       this.drawRoutePolyline();
       
-      setTimeout(() => {
-        console.log('🚀 CitizenMap: Iniciando simulación automática...');
-        this.startCombiSimulation();
-      }, 1000);
+      // Ya no se inicia simulación local, ahora se conecta al WebSocket
       
       this.cdr.detectChanges();
       console.log('✅ CitizenMap: Configuración del mapa completada');
@@ -200,144 +225,278 @@ export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private initializeRouteStops(): void {
-    this.routeStops = [
-      { lat: -17.3935, lng: -66.1570 }, // Centro
-      { lat: -17.3850, lng: -66.1500 }, // Zona Norte
-      { lat: -17.3800, lng: -66.1450 }, // Parada 1
-      { lat: -17.3750, lng: -66.1400 }, // Parada 2
-      { lat: -17.3700, lng: -66.1350 }, // Parada 3
-      { lat: -17.3650, lng: -66.1300 }, // Parada 4
-      { lat: -17.3600, lng: -66.1250 }, // Terminal
-      { lat: -17.3650, lng: -66.1300 }, // Regreso
-      { lat: -17.3700, lng: -66.1350 }, // Regreso
-      { lat: -17.3750, lng: -66.1400 }, // Regreso
-      { lat: -17.3800, lng: -66.1450 }, // Regreso
-      { lat: -17.3850, lng: -66.1500 }, // Regreso
-    ];
+    if (this.selectedRoute && this.selectedRoute.id) {
+      this.stopRepository.getByRouteId(this.selectedRoute.id).subscribe({
+        next: (stops) => {
+          this.stopsByRoute = Array.isArray(stops) ? stops : (stops && (stops as any).paradas ? (stops as any).paradas : []);
+          // --- RUTAS ---
+          let points: any[] = [];
+          if (Array.isArray((this.selectedRoute as any).path_data) && (this.selectedRoute as any).path_data.length > 0) {
+            points = (this.selectedRoute as any).path_data;
+            console.log('[CitizenMap] Usando path_data para puntos:', points);
+          } else if (Array.isArray(this.selectedRoute!.points) && this.selectedRoute!.points.length > 0) {
+            points = this.selectedRoute!.points;
+            console.log('[CitizenMap] Usando points para puntos:', points);
+          } else {
+            console.log('[CitizenMap] No se encontraron puntos en path_data ni points');
+          }
+          if (points.length > 0 && points[0].order !== undefined) {
+            points = [...points].sort((a: any, b: any) => a.order - b.order);
+          }
+          this.routeStops = points.map(p => ({ lat: p.lat, lng: p.lng }));
+          console.log('[CitizenMap] routeStops después de map:', this.routeStops);
+          if (this.routeStops.length > 0 && this.mapInstance) {
+            this.mapInstance.setCenter(this.routeStops[0]);
+          }
+          this.drawRoutePolyline();
+          this.drawStopMarkers();
+        },
+        error: (err) => {
+          console.error('CitizenMap: Error al obtener paradas por ruta:', err);
+          this.stopsByRoute = [];
+          let points: any[] = [];
+          if (Array.isArray((this.selectedRoute as any).path_data) && (this.selectedRoute as any).path_data.length > 0) {
+            points = (this.selectedRoute as any).path_data;
+            console.log('[CitizenMap] (error) Usando path_data para puntos:', points);
+          } else if (Array.isArray(this.selectedRoute!.points) && this.selectedRoute!.points.length > 0) {
+            points = this.selectedRoute!.points;
+            console.log('[CitizenMap] (error) Usando points para puntos:', points);
+          } else {
+            console.log('[CitizenMap] (error) No se encontraron puntos en path_data ni points');
+          }
+          if (points.length > 0 && points[0].order !== undefined) {
+            points = [...points].sort((a: any, b: any) => a.order - b.order);
+          }
+          this.routeStops = points.map(p => ({ lat: p.lat, lng: p.lng }));
+          console.log('[CitizenMap] (error) routeStops después de map:', this.routeStops);
+          if (this.routeStops.length > 0 && this.mapInstance) {
+            this.mapInstance.setCenter(this.routeStops[0]);
+          }
+          this.drawRoutePolyline();
+          this.drawStopMarkers();
+        }
+      });
+    } else {
+      this.routeStops = [];
+      this.stopsByRoute = [];
+      this.drawRoutePolyline();
+      this.drawStopMarkers();
+    }
     console.log('CitizenMap: Paradas de ruta inicializadas:', this.routeStops.length, 'paradas');
+  }
+  private drawStopMarkers(): void {
+    if (!this.mapInstance) return;
+    this.stopMarkers.forEach(marker => marker.map = null);
+    this.stopMarkers = [];
+    if (!this.stopsByRoute || this.stopsByRoute.length === 0) return;
+    this.stopsByRoute.forEach((stop, idx) => {
+      const lat = typeof stop.ubicacion.lat === 'number' ? stop.ubicacion.lat : (typeof stop.ubicacion.latitud === 'number' ? stop.ubicacion.latitud : null);
+      const lng = typeof stop.ubicacion.lng === 'number' ? stop.ubicacion.lng : (typeof stop.ubicacion.longitud === 'number' ? stop.ubicacion.longitud : null);
+      if (lat === null || lng === null || lat === 0 || lng === 0) return;
+      const iconImg = document.createElement('img');
+      iconImg.src = 'bus-stopB.png';
+      iconImg.style.width = '40px';
+      iconImg.style.height = '40px';
+      const marker = new google.maps.marker.AdvancedMarkerElement({
+        map: this.mapInstance,
+        position: { lat, lng },
+        content: iconImg,
+        title: stop.nombre,
+      });
+      this.stopMarkers.push(marker);
+    });
+  }
+
+  private updateRoutePolyline(): void {
+    this.initializeRouteStops();
   }
 
   private drawRoutePolyline(): void {
-    if (!this.mapInstance || this.routeStops.length === 0) return;
-
-    if (typeof google === 'undefined' || !google.maps) {
-      console.error('❌ CitizenMap: Google Maps API no está disponible para polyline');
-      return;
-    }
-
-    this.routePolyline = new google.maps.Polyline({
-      path: this.routeStops,
-      geodesic: true,
-      strokeColor: '#6A994E',
-      strokeOpacity: 1.0,
-      strokeWeight: 4,
-    });
-
-    this.routePolyline.setMap(this.mapInstance);
-    console.log('CitizenMap: Ruta dibujada en el mapa');
-  }
-
-  private addCombiMarker(): void {
-    if (!this.mapInstance || this.routeStops.length === 0) return;
-
-    if (typeof google === 'undefined' || !google.maps || !google.maps.marker) {
-      console.error('❌ CitizenMap: Google Maps marker API no está disponible');
-      return;
-    }
-
-    try {
-      console.log('CitizenMap: Añadiendo marcador de combi');
-      
-      // Usar la misma imagen que el componente admin
-      const icon = document.createElement('img');
-      icon.src = 'combi.png';
-      icon.style.width = '40px';
-      icon.style.height = '40px';
-      
-      // Agregar manejo de errores para la imagen igual que en el admin
-      icon.onerror = () => {
-        console.warn('CitizenMap: No se pudo cargar combi.png, usando marcador por defecto');
-        // Si falla la imagen, crear un marcador personalizado con CSS como fallback
-        const markerDiv = document.createElement('div');
-        markerDiv.style.width = '40px';
-        markerDiv.style.height = '40px';
-        markerDiv.style.backgroundColor = '#6A994E';
-        markerDiv.style.borderRadius = '50%';
-        markerDiv.style.border = '3px solid white';
-        markerDiv.style.display = 'flex';
-        markerDiv.style.alignItems = 'center';
-        markerDiv.style.justifyContent = 'center';
-        markerDiv.style.fontSize = '20px';
-        markerDiv.innerHTML = '🚐';
-        
-        if (this.combiMarker) {
-          this.combiMarker.content = markerDiv;
-        }
-      };
-
-      this.combiMarker = new google.maps.marker.AdvancedMarkerElement({
-        map: this.mapInstance,
-        position: this.routeStops[0],
-        title: 'Combi en tiempo real',
-        content: icon,
-      });
-      
-      console.log('CitizenMap: Marcador de combi añadido exitosamente');
-    } catch (error) {
-      console.error('CitizenMap: Error al añadir marcador de combi:', error);
-    }
-  }
-
-  private startCombiSimulation(): void {
-    if (this.isSimulationRunning) return;
-    
-    this.isSimulationRunning = true;
-    console.log('CitizenMap: Iniciando simulación de combi');
-    
-    this.simulationSubscription = interval(3000).subscribe(() => {
-      this.moveCombiToNextStop();
-    });
-  }
-
-  private moveCombiToNextStop(): void {
-    if (!this.combiMarker || this.routeStops.length === 0) return;
-
-    this.currentStopIndex = (this.currentStopIndex + 1) % this.routeStops.length;
-    const nextPosition = this.routeStops[this.currentStopIndex];
-    
-    this.animateMarkerMovement(nextPosition);
-    
-    console.log(`CitizenMap: Combi movida a parada ${this.currentStopIndex + 1}/${this.routeStops.length}`);
-  }
-
-  private animateMarkerMovement(targetPosition: google.maps.LatLngLiteral): void {
-    if (!this.combiMarker) return;
-
-    const currentPosition = this.combiMarker.position as google.maps.LatLngLiteral;
-    const steps = 20;
-    let stepCount = 0;
-
-    const latIncrement = (targetPosition.lat - currentPosition.lat) / steps;
-    const lngIncrement = (targetPosition.lng - currentPosition.lng) / steps;
-
-    const animate = () => {
-      if (stepCount < steps && this.combiMarker) {
-        const newLat = currentPosition.lat + (latIncrement * stepCount);
-        const newLng = currentPosition.lng + (lngIncrement * stepCount);
-        
-        this.combiMarker.position = { lat: newLat, lng: newLng };
-        stepCount++;
-        
-        setTimeout(animate, 50);
+    console.log('[CitizenMap] drawRoutePolyline called. mapInstance:', this.mapInstance, 'routeStops:', this.routeStops);
+    if (!this.mapInstance || this.routeStops.length === 0) {
+      console.warn('[CitizenMap] No mapInstance o routeStops vacío, no se traza ruta');
+      if (this.routePolyline) {
+        this.routePolyline.setMap(null);
+        this.routePolyline = undefined;
       }
-    };
+      if (this.directionsRenderer) {
+        this.directionsRenderer.setMap(null);
+        this.directionsRenderer = undefined;
+      }
+      return;
+    }
 
-    animate();
+    if (this.routeStops.length > 0 && this.mapInstance) {
+      console.log('[CitizenMap] Centrar mapa en primer punto:', this.routeStops[0]);
+      this.mapInstance.setCenter(this.routeStops[0]);
+    }
+
+    if (this.routeStops.length > 1) {
+      console.log('[CitizenMap] Trazando ruta con DirectionsService, puntos:', this.routeStops);
+      this.traceRouteWithDirections(this.routeStops);
+    } else {
+      console.log('[CitizenMap] Solo un punto, trazando polyline recta:', this.routeStops);
+      this.routePolyline = new google.maps.Polyline({
+        path: this.routeStops,
+        geodesic: true,
+        strokeColor: '#6A994E',
+        strokeOpacity: 1.0,
+        strokeWeight: 4,
+      });
+      this.routePolyline.setMap(this.mapInstance);
+    }
   }
+
+  private traceRouteWithDirections(points: { lat: number, lng: number }[]): void {
+    console.log('[CitizenMap] traceRouteWithDirections called. points:', points, 'mapInstance:', this.mapInstance);
+    if (typeof google === 'undefined' || !google.maps || !google.maps.DirectionsService) {
+      console.warn('[traceRouteWithDirections] Google Maps API no disponible, usando polyline recta');
+      this.routePolyline = new google.maps.Polyline({
+        path: points,
+        geodesic: true,
+        strokeColor: '#6A994E',
+        strokeOpacity: 1.0,
+        strokeWeight: 4,
+      });
+      this.routePolyline.setMap(this.mapInstance);
+      return;
+    }
+    const directionsService = new google.maps.DirectionsService();
+    if (this.directionsRenderer) {
+      this.directionsRenderer.setMap(null);
+    }
+    this.directionsRenderer = new google.maps.DirectionsRenderer({
+      suppressMarkers: true,
+      polylineOptions: {
+        strokeColor: '#386641',
+        strokeOpacity: 1.0,
+        strokeWeight: 4
+      }
+    });
+    const assignAndRoute = () => {
+      if (this.mapInstance) {
+        console.log('[CitizenMap] DirectionsRenderer setMap', this.mapInstance);
+        this.directionsRenderer!.setMap(this.mapInstance);
+      }
+      const waypoints = points.slice(1, points.length - 1).map(p => ({ location: { lat: p.lat, lng: p.lng }, stopover: false }));
+      console.log('[CitizenMap] DirectionsService.route', {
+        origin: { lat: points[0].lat, lng: points[0].lng },
+        destination: { lat: points[points.length - 1].lat, lng: points[points.length - 1].lng },
+        waypoints,
+        travelMode: google.maps.TravelMode.DRIVING
+      });
+      directionsService.route({
+        origin: { lat: points[0].lat, lng: points[0].lng },
+        destination: { lat: points[points.length - 1].lat, lng: points[points.length - 1].lng },
+        waypoints: waypoints,
+        travelMode: google.maps.TravelMode.DRIVING
+      }, (result, status) => {
+        console.log('[CitizenMap] DirectionsService callback', status, result);
+        if (status === 'OK' && result) {
+          this.directionsRenderer!.setDirections(result);
+        } else {
+          console.warn('[traceRouteWithDirections] Error al trazar ruta, usando polyline recta:', status, result);
+          this.routePolyline = new google.maps.Polyline({
+            path: points,
+            geodesic: true,
+            strokeColor: '#6A994E',
+            strokeOpacity: 1.0,
+            strokeWeight: 4,
+          });
+          this.routePolyline.setMap(this.mapInstance);
+        }
+      });
+    };
+    if (this.mapInstance) {
+      assignAndRoute();
+    } else {
+      const interval = setInterval(() => {
+        if (this.mapInstance) {
+          clearInterval(interval);
+          assignAndRoute();
+        }
+      }, 100);
+    }
+  }
+
+
+  private clearCombiMarkers(): void {
+    Object.values(this.combiMarkers).forEach(marker => marker.map = null);
+    this.combiMarkers = {};
+    this.combisByRoute = [];
+  }
+
+  private connectCombiWebSocket(): void {
+    this.clearCombiMarkers();
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
+    if (!this.selectedRoute || !this.selectedRoute.id) return;
+    try {
+      this.ws = new WebSocket(environments.wsCombisUrl + `?routeId=${this.selectedRoute.id}`);
+      this.ws.onopen = () => {
+        console.log('[CitizenMap] WebSocket abierto para combis de ruta', this.selectedRoute!.id);
+      };
+      this.ws.onmessage = (event) => {
+        let data: any[] = [];
+        try {
+          data = JSON.parse(event.data);
+        } catch (e) {
+          console.error('[CitizenMap] Error parseando datos de combis:', e, event.data);
+          return;
+        }
+        this.updateCombiMarkers(data);
+      };
+      this.ws.onerror = (err) => {
+        console.error('[CitizenMap] Error en WebSocket de combis:', err);
+      };
+      this.ws.onclose = () => {
+        console.log('[CitizenMap] WebSocket de combis cerrado');
+      };
+    } catch (e) {
+      console.error('[CitizenMap] No se pudo conectar al WebSocket de combis:', e);
+    }
+  }
+
+  private updateCombiMarkers(combis: any[]): void {
+    if (!this.mapInstance || typeof google === 'undefined' || !google.maps || !google.maps.marker) return;
+    this.combisByRoute = combis.filter(c => c.routeId === this.selectedRoute?.id);
+    Object.keys(this.combiMarkers).forEach(id => {
+      if (!this.combisByRoute.find(c => c.id === id)) {
+        this.combiMarkers[id].map = null;
+        delete this.combiMarkers[id];
+      }
+    });
+    this.combisByRoute.forEach(combi => {
+      if (!combi.lat || !combi.lng) return;
+      if (!this.combiMarkers[combi.id]) {
+        const icon = document.createElement('img');
+        icon.src = 'colectivo1.png';
+        icon.style.width = '40px';
+        icon.style.height = '40px';
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+          map: this.mapInstance,
+          position: { lat: combi.lat, lng: combi.lng },
+          title: `Combi ${combi.id}`,
+          content: icon,
+        });
+        this.combiMarkers[combi.id] = marker;
+      } else {
+        this.combiMarkers[combi.id].position = { lat: combi.lat, lng: combi.lng };
+      }
+    });
+  }
+
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
-    this.simulationSubscription?.unsubscribe();
-    this.isSimulationRunning = false;
+    if (this.ws) {
+      this.ws.close();
+      this.ws = undefined;
+    }
+    this.clearCombiMarkers();
+    this.stopMarkers.forEach(marker => marker.map = null);
+    this.stopMarkers = [];
   }
 }

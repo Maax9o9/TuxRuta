@@ -1,3 +1,20 @@
+// Overlay para delete-alert, igual que otros modales
+.delete-alert-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4000;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
 .colective-table {
   width: 100%;
   border-collapse: collapse;
