@@ -1,14 +1,14 @@
 export const environments = { 
     production : false,
-    apiLogin: 'https://9jw825mb-8080.usw3.devtunnels.ms/login',
-    apiRuta: 'https://9jw825mb-8080.usw3.devtunnels.ms/rutas',
-    apiColectivo: 'https://9jw825mb-8080.usw3.devtunnels.ms/colectivo',
-    apiColectivos: 'https://9jw825mb-8080.usw3.devtunnels.ms/colectivos',
-    apiParadas: 'https://9jw825mb-8080.usw3.devtunnels.ms/paradas',
-    apiParadasPorRuta: 'https://9jw825mb-8080.usw3.devtunnels.ms/paradas/ruta',
-    wsCombisUrl: 'ws://localhost:3000/ws/combis', // Cambia esto según tu entorno
-    apiMetricas: 'https://9jw825mb-9000.usw3.devtunnels.ms/api/metricas-mensuales',
-    apiMetricasDiarias: 'https://9jw825mb-9000.usw3.devtunnels.ms/api/metricas-diarias',
-    apiMetricasRango: 'https://9jw825mb-9000.usw3.devtunnels.ms/api/metricas-rango',
+    apiLogin: 'http://3.228.56.73:8080/login',
+    apiRuta: 'http://3.228.56.73:8080/rutas',
+    apiColectivo: 'http://3.228.56.73:8080/colectivo',
+    apiColectivos: 'http://3.228.56.73:8080/colectivos',
+    apiParadas: 'http://3.228.56.73:8080/paradas',
+    apiParadasPorRuta: 'http://3.228.56.73:8080/paradas/ruta',
+    wsCombisUrl: 'ws://3.228.56.73:9000/ws', // Cambia esto según tu entorno
+    apiMetricas: 'http://13.222.43.111:8000/api/metricas-mensuales',
+    apiMetricasDiarias: 'http://13.222.43.111:8000/api/metricas-diarias',
+    apiMetricasRango: 'http://13.222.43.111:8000/api/metricas-rango',
 
 }

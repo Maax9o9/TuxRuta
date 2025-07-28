@@ -39,6 +39,9 @@ export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
         this.mapInstance.setCenter({ lat: firstPoint.lat, lng: firstPoint.lng });
       }
     }
+      if (this.mapInstance) {
+    this.connectCombiWebSocket();
+  }
   }
   get selectedRoute(): Route | null {
     return this._selectedRoute;
@@ -177,7 +180,9 @@ export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.drawRoutePolyline();
       
       // Ya no se inicia simulación local, ahora se conecta al WebSocket
-      
+      if (this.mapInstance ){
+        this.connectCombiWebSocket();
+      }
       this.cdr.detectChanges();
       console.log('✅ CitizenMap: Configuración del mapa completada');
     }, 0);
@@ -426,67 +431,120 @@ export class CitizenMapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.combisByRoute = [];
   }
 
-  private connectCombiWebSocket(): void {
-    this.clearCombiMarkers();
-    if (this.ws) {
-      this.ws.close();
-      this.ws = undefined;
-    }
-    if (!this.selectedRoute || !this.selectedRoute.id) return;
-    try {
-      this.ws = new WebSocket(environments.wsCombisUrl + `?routeId=${this.selectedRoute.id}`);
-      this.ws.onopen = () => {
-        console.log('[CitizenMap] WebSocket abierto para combis de ruta', this.selectedRoute!.id);
-      };
-      this.ws.onmessage = (event) => {
-        let data: any[] = [];
-        try {
-          data = JSON.parse(event.data);
-        } catch (e) {
-          console.error('[CitizenMap] Error parseando datos de combis:', e, event.data);
-          return;
-        }
-        this.updateCombiMarkers(data);
-      };
-      this.ws.onerror = (err) => {
-        console.error('[CitizenMap] Error en WebSocket de combis:', err);
-      };
-      this.ws.onclose = () => {
-        console.log('[CitizenMap] WebSocket de combis cerrado');
-      };
-    } catch (e) {
-      console.error('[CitizenMap] No se pudo conectar al WebSocket de combis:', e);
-    }
+private connectCombiWebSocket(): void {
+  this.clearCombiMarkers();
+  if (this.ws) {
+    this.ws.close();
+    this.ws = undefined;
+  }
+  if (!this.selectedRoute || !this.selectedRoute.id) return;
+  try {
+    this.ws = new WebSocket(environments.wsCombisUrl);
+    this.ws.onopen = () => {
+      console.log('[CitizenMap] WebSocket abierto para combis de ruta', this.selectedRoute!.id);
+    };
+    this.ws.onmessage = (event) => {
+      // 👇 Aquí ves el mensaje crudo recibido
+      console.log('[CitizenMap] Mensaje recibido del WS:', event.data);
+      let data: any[] = [];
+      try {
+        data = JSON.parse(event.data);
+        // 👇 Aquí ves el objeto ya parseado
+        console.log('[CitizenMap] Datos parseados del WS:', data);
+      } catch (e) {
+        console.error('[CitizenMap] Error parseando datos de combis:', e, event.data);
+        return;
+      }
+      this.updateCombiMarkers(data);
+    };
+    this.ws.onerror = (err) => {
+      console.error('[CitizenMap] Error en WebSocket de combis:', err);
+    };
+    this.ws.onclose = () => {
+      console.log('[CitizenMap] WebSocket de combis cerrado');
+    };
+  } catch (e) {
+    console.error('[CitizenMap] No se pudo conectar al WebSocket de combis:', e);
+  }
+}
+private updateCombiMarkers(combis: any[]): void {
+  if (!this.mapInstance || typeof google === 'undefined' || !google.maps || !google.maps.marker) return;
+
+  // Si el WS manda un solo objeto, conviértelo en array
+  if (!Array.isArray(combis)) {
+    combis = [combis];
   }
 
-  private updateCombiMarkers(combis: any[]): void {
-    if (!this.mapInstance || typeof google === 'undefined' || !google.maps || !google.maps.marker) return;
-    this.combisByRoute = combis.filter(c => c.routeId === this.selectedRoute?.id);
-    Object.keys(this.combiMarkers).forEach(id => {
-      if (!this.combisByRoute.find(c => c.id === id)) {
-        this.combiMarkers[id].map = null;
-        delete this.combiMarkers[id];
-      }
+  // Transforma los datos si vienen en formato GPS simple
+  const markers = combis.map((c, idx) => ({
+    id: c.id ?? `gps-${idx}`,
+    lat: c.lat ?? c.latitude,
+    lng: c.lng ?? c.longitude,
+    routeId: c.routeId ?? this.selectedRoute?.id ,// Asume la ruta seleccionada si no viene
+    speed_kmh: c.speed_kmh ?? c.speed ?? 0 // <-- Añade esto
+
+  }));
+
+  this.combisByRoute = markers.filter(c => c.lat && c.lng && c.routeId === this.selectedRoute?.id);
+
+  Object.keys(this.combiMarkers).forEach(id => {
+    if (!this.combisByRoute.find(c => c.id === id)) {
+      this.combiMarkers[id].map = null;
+      delete this.combiMarkers[id];
+    }
+  });
+this.combisByRoute.forEach(combi => {
+  if (!combi.lat || !combi.lng) return;
+  if (!this.combiMarkers[combi.id]) {
+    // Crea el contenedor del marcador
+    const container = document.createElement('div');
+    container.style.position = 'relative';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.alignItems = 'center';
+
+    // Crea el "dialog" de velocidad
+    const speedDialog = document.createElement('div');
+    speedDialog.textContent = `${combi.speed_kmh ?? 0} km/h`;
+    speedDialog.style.background = 'rgba(33,33,33,0.95)';
+    speedDialog.style.color = '#A7C957';
+    speedDialog.style.fontSize = '13px';
+    speedDialog.style.fontWeight = 'bold';
+    speedDialog.style.padding = '2px 8px';
+    speedDialog.style.borderRadius = '8px';
+    speedDialog.style.marginBottom = '4px';
+    speedDialog.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
+    speedDialog.style.whiteSpace = 'nowrap';
+
+    // Crea el icono de la combi
+    const icon = document.createElement('img');
+    icon.src = 'colectivo1.png';
+    icon.style.width = '40px';
+    icon.style.height = '40px';
+
+    // Añade el dialog y el icono al contenedor
+    container.appendChild(speedDialog);
+    container.appendChild(icon);
+
+    // Crea el marcador
+    const marker = new google.maps.marker.AdvancedMarkerElement({
+      map: this.mapInstance,
+      position: { lat: combi.lat, lng: combi.lng },
+      title: `Combi ${combi.id}`,
+      content: container,
     });
-    this.combisByRoute.forEach(combi => {
-      if (!combi.lat || !combi.lng) return;
-      if (!this.combiMarkers[combi.id]) {
-        const icon = document.createElement('img');
-        icon.src = 'colectivo1.png';
-        icon.style.width = '40px';
-        icon.style.height = '40px';
-        const marker = new google.maps.marker.AdvancedMarkerElement({
-          map: this.mapInstance,
-          position: { lat: combi.lat, lng: combi.lng },
-          title: `Combi ${combi.id}`,
-          content: icon,
-        });
-        this.combiMarkers[combi.id] = marker;
-      } else {
-        this.combiMarkers[combi.id].position = { lat: combi.lat, lng: combi.lng };
-      }
-    });
+    this.combiMarkers[combi.id] = marker;
+  } else {
+    this.combiMarkers[combi.id].position = { lat: combi.lat, lng: combi.lng };
+    // Si quieres actualizar la velocidad en tiempo real:
+    const container = this.combiMarkers[combi.id].content as HTMLDivElement;
+    if (container && container.firstChild) {
+      (container.firstChild as HTMLDivElement).textContent = `${combi.speed_kmh ?? 0} km/h`;
+    }
   }
+});
+}
+
 
 
   ngOnDestroy(): void {
