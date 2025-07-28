@@ -66,19 +66,23 @@ export class RushHourComponent {
 
   // Llama a este método con los datos del backend
   updateChartData(response: any): void {
-    const data = response?.datos || [];
-    this.scatterChartData.datasets[0].data = data
-      .filter((item: any) => item.hora_pico && item.hora_pico !== 'Sin datos')
-      .map((item: any) => ({
+  const data = response?.datos || [];
+  this.scatterChartData.datasets[0].data = data
+    .filter((item: any) => item.hora_pico && item.hora_pico !== 'Sin datos')
+    .map((item: any) => {
+      // Si es un rango, toma la hora de inicio
+      const horaInicio = item.hora_pico.split('-')[0];
+      return {
         x: item.fecha,
-        y: this.parseHourToMinutes(item.hora_pico)
-      }));
-    if (this.chart) this.chart.update();
-  }
+        y: this.parseHourToMinutes(horaInicio)
+      };
+    });
+  if (this.chart) this.chart.update();
+}
 
-  // Convierte "13:45" a minutos (825)
-  private parseHourToMinutes(hora: string): number {
-    const [h, m] = hora.split(':').map(Number);
-    return h * 60 + m;
-  }
+// Convierte "13:45" a minutos (825)
+private parseHourToMinutes(hora: string): number {
+  const [h, m] = hora.split(':').map(Number);
+  return h * 60 + m;
+}
 }
