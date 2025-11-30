@@ -131,7 +131,15 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
     padding: 1rem 2rem;
     .page-title {
       font-size: 1.7rem;
-    }
+      text-align: center;
+      width: 100%;
+      margin-top: 10px;    }
+  }
+  /* Enable vertical scroll only on responsive */
+  html, body, :host, .travel-promedy-page-container, .content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    height: auto !important;
   }
   .page-layout {
     flex-direction: column;
@@ -148,8 +156,11 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
     padding: 1.5rem;
   }
   .chart-wrapper {
-    max-width: 100%;
-    min-height: 350px;
+    width: 95% !important;
+    max-width: 900px !important; /* ensure larger than inner graph */
+    min-width: 720px !important; /* keep it at least as wide as the graph */
+    margin: 0 auto 20px !important;
+    transform: translateX(-16px) !important;
     padding: 1.5rem 1rem 1rem 1rem;
   }
 }
@@ -161,11 +172,21 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
       font-size: 1.5rem;
     }
   }
+  /* Enable vertical scroll only on responsive */
+  html, body, :host, .travel-promedy-page-container, .content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    height: auto !important;
+  }
   .content-wrapper {
     padding: 1rem;
   }
   .chart-wrapper {
-    min-height: 300px;
+    width: 95% !important;
+    max-width: 900px !important; /* ensure larger than inner graph */
+    min-width: 720px !important; /* keep it at least as wide as the graph */
+    margin: 0 auto 20px !important;
+    transform: translateX(-16px) !important;
     padding: 1rem;
   }
 }
@@ -177,11 +198,21 @@ html, body, :host, .travel-promedy-page-container, .content-wrapper {
       font-size: 1.3rem;
     }
   }
+  /* Enable vertical scroll only on responsive */
+  html, body, :host, .travel-promedy-page-container, .content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    height: auto !important;
+  }
   .content-wrapper {
     padding: 0.8rem;
   }
   .chart-wrapper {
-    min-height: 220px;
+    width: 95% !important;
+    max-width: 900px !important; /* ensure larger than inner graph */
+    min-width: 720px !important; /* keep it at least as wide as the graph */
+    margin: 0 auto 20px !important;
+    transform: translateX(-16px) !important;
     padding: 0.7rem;
   }
 }

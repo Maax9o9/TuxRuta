@@ -16,12 +16,15 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .admin-content {
-    margin-left: 200px; /* Adjusted for smaller sidebar */
+    /* On mobile do not push content to make room for sidebar; allow sidebar to overlay. */
+    margin-left: 0;
+    background: transparent;
   }
 }
 
 @media (max-width: 480px) {
   .admin-content {
-    margin-left: 180px; /* Adjusted for smallest sidebar */
+    margin-left: 0;
+    background: transparent;
   }
 }

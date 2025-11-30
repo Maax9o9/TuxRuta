@@ -90,6 +90,7 @@ html, body, :host, .rush-hour-page-container, .content-wrapper {
 
 .chart-section {
   flex: 1;
+  margin-left: -16px; /* nudge slightly left to align with form */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -110,50 +111,119 @@ html, body, :host, .rush-hour-page-container, .content-wrapper {
   width: 100%;
   max-width: 700px;
   min-height: 400px;
+  margin-bottom: 20px;
 }
 
-/* Responsive design */
+/* Responsive design - consolidated and corrected */
 @media (max-width: 1024px) {
+  .page-top-bar {
+    padding: 1rem 2rem;
+
+    .page-title {
+      font-size: 1.7rem;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  /* Allow vertical scrolling for the page on responsive only */
+  html, body, :host, .rush-hour-page-container, .content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    height: auto !important;
+  }
+
   .page-layout {
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .filters-section {
     flex: none;
     min-width: auto;
-    width: 100%;
+    width: 75%;
+    height: 85%;
+    max-width: 420px;
+    margin: 0 auto 0 0;
+    padding: 0.6rem;
   }
-  
+
   .content-wrapper {
-    padding: 1.5rem;
+    padding: 2.5rem;
   }
-  
+
   .chart-wrapper {
-    max-width: 100%;
+    width: 85% !important;
+    max-width: 85% !important;
+    margin: 0 auto 20px !important;
     min-height: 350px;
-    padding: 1.2rem;
+    padding: 1.5rem 1rem 1rem 1rem;
+    align-items: center;
+    /* Move the wrapper slightly up to reduce gap above */
+    margin-top: -1rem !important;
   }
 }
 
 @media (max-width: 768px) {
+  .page-top-bar {
+    padding: 1.5rem 1rem;
+
+    .page-title {
+      font-size: 1.5rem;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  html, body, :host, .rush-hour-page-container, .content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    height: auto !important;
+  }
+
   .content-wrapper {
     padding: 1rem;
   }
-  
+
   .chart-wrapper {
+    width: 85% !important;
+    max-width: 85% !important;
+    margin: 0 auto 20px !important;
     min-height: 300px;
     padding: 1rem;
+    /* Move up a bit on smaller screens */
+    margin-top: -0.8rem !important;
   }
 }
 
 @media (max-width: 480px) {
+  .page-top-bar {
+    padding: 1.2rem 1rem;
+
+    .page-title {
+      font-size: 1.3rem;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  html, body, :host, .rush-hour-page-container, .content-wrapper {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    height: auto !important;
+  }
+
   .content-wrapper {
     padding: 0.8rem;
   }
-  
+
   .chart-wrapper {
-    min-height: 280px;
+    width: 85% !important;
+    max-width: 85% !important;
+    margin: 0 auto 20px !important;
+    min-height: 220px;
     padding: 0.8rem;
+    /* Move up slightly on very small screens */
+    margin-top: -0.6rem !important;
   }
 }

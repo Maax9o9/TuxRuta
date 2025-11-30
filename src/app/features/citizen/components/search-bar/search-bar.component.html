@@ -5,7 +5,7 @@
     <a class="tab" (click)="goToAboutUs()">Conócenos</a>
   </div>
 
-  <button class="search-button" (click)="toggleSearch()">
+  <button *ngIf="showSearchButton" class="search-button" (click)="toggleSearch()">
     <img src="search-icon.png" alt="Buscar" class="search-icon" />
   </button>
 

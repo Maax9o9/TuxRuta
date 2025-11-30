@@ -1,7 +1,18 @@
-<div class="admin-sidebar">
-  <div class="sidebar-header">
-    <img src="/Logo_TuxRuta.png" alt="TuxRuta Logo" class="sidebar-logo">
-  </div>
+<div class="admin-sidebar-wrapper">
+  <button class="mobile-hamburger" (click)="toggleSidebar()" aria-label="Abrir menú">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="sidebar-backdrop" (click)="toggleSidebar()" [class.visible]="!isCollapsed"></div>
+
+  <!-- sidebar handle removed; keep only hamburger and backdrop for mobile -->
+
+  <div class="admin-sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header">
+      <img src="/Logo_TuxRuta.png" alt="TuxRuta Logo" class="sidebar-logo">
+    </div>
 
   <nav class="sidebar-nav">
     <ul class="nav-list">
@@ -147,5 +158,6 @@
     <img *ngIf="iconPaths.logout" [src]="iconPaths.logout" [ngStyle]="getIconStyle()" alt="icono logout" />
     <fa-icon [icon]="faRightFromBracket"></fa-icon>
   </button>
+  </div>
 </div>
 

@@ -39,6 +39,7 @@
   max-width: 50%;
   height: 100%;
   display: flex;
+  border-radius: 8px;
   align-items: flex-start;
   justify-content: center;
   
@@ -47,5 +48,71 @@
     width: 100%;
     height: 100%;
     border-radius: 8px;
+  }
+}
+
+/* Responsive: stack cards (top half) and map (bottom half) */
+@media (max-width: 768px) {
+  .bottom-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  /* make cards occupy slightly less and give map a bit more vertical space */
+  .cards-section {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: 30vh; /* top 30% so map can take 70% */
+    box-sizing: border-box;
+    padding: 0; /* remove extra vertical gaps so map fills its area */
+    overflow: hidden; /* inner component will handle horizontal scroll */
+    order: 1;
+  }
+
+  .map-section {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    height: 70vh; /* bottom 70% to give the map more space */
+    order: 2;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0; /* remove gaps that caused visible space under the map */
+    overflow: hidden;
+    border-radius: 0; /* remove rounding on the container for mobile */
+
+    app-citizen-map {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      flex: 1 1 auto; /* ensure the map fills the container */
+      display: block;
+      border-radius: 0; /* remove rounding on the map itself in mobile */
+    }
+  }
+
+  /* Force internal map container to fill 100% of the area on mobile.
+     Use ::ng-deep to override styles defined inside the child component. */
+  app-citizen-map {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    display: block !important;
+  }
+
+  app-citizen-map ::ng-deep .citizen-map-container {
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  app-citizen-map ::ng-deep google-map,
+  app-citizen-map ::ng-deep google-map > div {
+    height: 100% !important;
+    width: 100% !important;
   }
 }

@@ -158,6 +158,33 @@ app-google-map {
     min-height: 400px;
     overflow: hidden;
   }
+
+  app-google-map,
+  app-google-map ::ng-deep google-map,
+  app-google-map ::ng-deep .gm-style,
+  app-google-map ::ng-deep .gm-style > div:first-child {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  app-google-map ::ng-deep .route-controls {
+    right: 12px !important;
+    top: 12px !important;
+    gap: 8px !important;
+    flex-direction: column !important;
+    width: auto !important;
+  }
+
+  app-google-map ::ng-deep .route-btn {
+    width: auto !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    min-width: 0 !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -166,6 +193,8 @@ app-google-map {
     
     .page-title {
       font-size: 1.5rem;
+      text-align: center; 
+      width: 100%;
     }
   }
 
@@ -184,9 +213,34 @@ app-google-map {
   }
   
   .map-section {
-    height: 40vh;
-    min-height: 300px;
+    margin-top: 20px;
+    height: 100%; 
+    min-height: 360px;
     overflow: hidden;
+  }
+
+  /* Make wrapper exactly match the map size to avoid vertical gaps */
+  .map-wrapper {
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    margin-top: 50px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+  }
+
+  app-google-map {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow: hidden !important;
   }
 }
 
@@ -214,8 +268,31 @@ app-google-map {
   }
   
   .map-section {
-    height: 35vh;
-    min-height: 250px;
+    height: 50vh; /* increase height on small phones */
+    min-height: 360px;
     overflow: hidden;
+  }
+
+  /* Ensure wrapper matches map height on very small screens */
+  .map-wrapper {
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+  }
+
+  app-google-map {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow: hidden !important;
   }
 }

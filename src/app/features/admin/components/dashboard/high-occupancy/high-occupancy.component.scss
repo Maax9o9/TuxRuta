@@ -31,3 +31,31 @@
   height: 200px;
   width: 100%;
 }
+
+/* Responsive: scale down component to 80% on small screens */
+@media (max-width: 1024px) {
+  .chart-container {
+    width: 94% !important;
+    margin: 0 auto !important;
+    transform: scale(0.94);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    width: 94% !important;
+    margin: 0.5rem auto !important;
+    transform: scale(0.94);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-container {
+    width: 94% !important;
+    margin: 0.5rem auto !important;
+    transform: scale(0.94);
+    transform-origin: top center;
+  }
+}
