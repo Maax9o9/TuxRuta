@@ -1,4 +1,4 @@
-
+/* ---- Home page base styles ---- */
 .home-container {
   display: flex;
   flex-direction: column;
@@ -8,8 +8,13 @@
   font-family: 'Poppins', sans-serif;
   overflow: hidden;
   user-select: none;
-
 }
+
+/* Responsive breakpoints */
+$breakpoint-lg: 1200px;
+$breakpoint-md: 992px;
+$breakpoint-sm: 768px;
+$breakpoint-xs: 480px;
 
 .header-section {
   width: 100%;
@@ -40,36 +45,35 @@
   max-width: 600px;
 }
 
-  .background-image {
-    width: 90%;
-    height: 93%;
-    object-fit: cover;
-    border-radius: 20px;
-    margin-top: 0;
-    margin-left: 0;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  }
+.background-image {
+  width: 90%;
+  height: 93%;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-top: 0;
+  margin-left: 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
 
 .logo-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(4px);
-    padding: 0.7rem;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  padding: 0.7rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .logo {
-      width: 120px;
-      height: auto;
-    }
+  .logo {
+    width: 120px;
+    height: auto;
   }
-
+}
 
 .actions-section {
   .card:last-child {
@@ -110,11 +114,15 @@
 .card-image {
   width: calc(100% - 40px);
   height: 100%;
+  min-height: 160px;
   border-radius: 12px !important;
   background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  aspect-ratio: 16 / 9;
   position: relative;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  overflow: visible;
+  overflow: hidden; /* clip overlay to image border-radius */
 }
 
 .card:nth-child(3) {
@@ -128,14 +136,15 @@
 .card-overlay {
   position: absolute;
   top: 0;
-  left: 70%;
-  width: 140px; 
-  height: 181px;  
-  transform: translateX(0);
+  right: 0;
+  left: auto;
+  width: 50%;
+  height: 100%;
+  transform: none;
   background-color: rgba(22, 36, 30, 0.45);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  border-radius: 0 12px 12px 0; /* rounded on left of overlay to match image */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,10 +158,10 @@
   font-weight: 500;
   line-height: 1.4;
   text-align: left;
-  z-index: 3;  display: flex;
+  z-index: 3;
+  display: flex;
   align-items: center;
   height: 100%;
-
 }
 
 .card-button {
@@ -174,3 +183,177 @@
     background-color: rgba(255, 255, 255, 0.13);
   }
 }
+
+/* Consolidated mobile responsive rules (cleaned from duplicates)
+   Keep only page-specific adjustments here; header-specific responsive
+   styling lives in `header.component.scss`. */
+@media (max-width: 768px) {
+  :host {
+    height: auto;
+  }
+
+  /* Stack main content vertically on mobile; allow page scroll */
+  .main-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    height: auto;
+    min-height: 0;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  /* Logo section aligned left with 20px offset */
+  .logo-section {
+    width: 100%;
+    height: 50%;
+    align-items: center;
+    /* allow the logo section to shrink on small screens so images aren't clipped */
+    min-width: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Make the background image a fixed compact width on mobile */
+  .background-image {
+    width: 200px;
+    height: auto;
+    border-radius: 12px;
+    margin: 0.5rem 0;
+    display: block; /* ensure it's visible and participates in layout */
+    max-width: 100%;
+    object-fit: cover;
+    visibility: visible;
+    opacity: 1;
+  }
+
+
+  /* Cards in two columns on top and the third centered below */
+  .actions-section {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px; /* horizontal gap between the two top cards */
+    row-gap: 80px;    /* vertical gap between rows (80px as requested) */
+    padding: 1.5rem 20px 2rem 20px;
+    justify-items: center; /* center cards within their grid cells */
+    align-items: start;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+  }
+
+  /* Third card spans both columns and is centered below the two */
+  .actions-section .card:nth-child(3) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin: 0 !important;
+  }
+
+  .card {
+    width: 90%;             /* make cards wider on small screens so images remain visible */
+    max-width: 360px;       /* cap to keep consistent sizing */
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  /* specific spacing for login card (requested) */
+  .card--login {
+    margin-bottom: 50px;
+  }
+
+  .card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+    visibility: visible;
+    min-height: 140px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  /* Adjust overlay so it doesn't overflow the shrunk image */
+  .card-overlay {
+    /* on small screens keep the overlay occupying the right 50% of the image
+       but reduce padding so text fits; if screen is very narrow, an extra
+       breakpoint will make it full width */
+    right: 0;
+    left: auto;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    border-radius: 0 10px 10px 0;
+    transform: none;
+    padding: 0.8rem;
+  }
+
+
+/* Stack cards to single column on very small screens */
+@media (max-width: 480px) {
+  .actions-section {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 24px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .card-button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.8rem;
+  }
+  /* On very small screens make overlay full width so text remains readable */
+  .card-overlay {
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    padding: 0.8rem;
+  }
+}
+  .card-text {
+    width: 100%;
+  }
+
+  /* Buttons centered below each card */
+  .card-button {
+    align-self: center;
+    margin-top: 0.7rem;
+    width: auto;
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  /* Permit scrolling when content exceeds viewport in mobile */
+  .home-container {
+    height: 100vh;
+    overflow-y: auto; /* enable vertical scroll on mobile */
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .header-section {
+    height: 60px;
+    min-height: 60px;
+    max-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+  }
+}
+

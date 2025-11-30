@@ -114,3 +114,38 @@ button[disabled] {
   background-color: #ebf9c9;
   color: #333;
 }
+
+/* Responsive adjustments for create-route form (only mobile/tablet) */
+@media (max-width: 768px) {
+  .create-route-form-container {
+    width: 380px !important; /* increased width on tablet */
+    padding: 1.2rem !important;
+    height: auto !important;
+  }
+
+  .alert {
+    width: 340px !important;
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 320px !important;
+  }
+
+  .form-textarea {
+    height: 80px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-route-form-container {
+    width: 370px !important; /* increased width on small screens */
+    padding: 0.9rem !important;
+    margin-right: 10px;
+    margin-bottom: 80px;
+  }
+  .alert { width: 300px !important; }
+  .form-input, .form-textarea { width: 300px !important; }
+  .form-textarea { height: 70px !important; }
+  .btn { font-size: 0.95rem; padding: 0.5rem 0.9rem; }
+}

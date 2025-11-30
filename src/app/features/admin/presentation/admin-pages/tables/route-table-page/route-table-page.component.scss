@@ -36,6 +36,16 @@
   }
 }
 
+@media (max-width: 768px) {
+  .page-top-bar {
+    justify-content: center;
+  }
+  .page-top-bar .page-title {
+    text-align: center;
+    width: 100%;
+  }
+}
+
 .separator {
   height: 2px;
   background: linear-gradient(90deg, #A7C957 0%, #6A994E 50%, #386641 100%);

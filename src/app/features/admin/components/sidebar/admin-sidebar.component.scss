@@ -17,6 +17,19 @@
 
 }
 
+/* Wrapper for mobile hamburger/backdrop so fixed elements are positioned to viewport */
+.admin-sidebar-wrapper {
+  position: relative;
+}
+
+.mobile-hamburger {
+  display: none;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
 .sidebar-header {
   margin-bottom: 2rem;
 }
@@ -195,4 +208,113 @@
 
 * {
   transition: all 0.2s ease;
+}
+
+/* Mobile responsive sidebar behavior */
+@media (max-width: 768px) {
+  /* No body padding — keep the page background filling to the left edge.
+     Sidebar when collapsed will be transparent and overlay the page, not push it. */
+  .mobile-hamburger {
+    display: flex;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1102;
+    width: 44px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .mobile-hamburger span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    border-radius: 3px;
+    background: #A7C957; /* requested color */
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1100; /* backdrop below expanded sidebar (adjusted further in media queries) */
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms ease, visibility 200ms ease;
+  }
+
+  .sidebar-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Collapsed sidebar occupies only a small strip (44px) so page background fills up to it.
+     When opened (not .collapsed) the sidebar expands to full width (280px). */
+  .admin-sidebar {
+    width: 50px; /* small visible strip when collapsed (user requested) */
+    transition: width 300ms ease, box-shadow 300ms ease;
+    border-right: 0;
+    box-shadow: none;
+    background: transparent; /* let page background show through when collapsed */
+    overflow: visible;
+  }
+
+  /* Expanded state: occupy full sidebar width and show background */
+  .admin-sidebar:not(.collapsed) {
+    width: 280px;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.35);
+    background: #212121;
+    z-index: 1101; /* keep sidebar above the backdrop so overlay doesn't darken/intercept sidebar */
+  }
+
+  /* When collapsed, hide nav items with a smooth transition */
+  .admin-sidebar.collapsed .sidebar-nav,
+  .admin-sidebar.collapsed .sidebar-footer,
+  .admin-sidebar.collapsed .sidebar-header img {
+    opacity: 0;
+    transform: translateX(-10px);
+    pointer-events: none;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  /* sidebar-handle removed; only hamburger will be used on mobile */
+
+  /* compact the sidebar content on mobile for denser layout */
+  .admin-sidebar .sidebar-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    padding: 0.5rem;
+  }
+
+  .admin-sidebar .nav-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.88rem;
+    gap: 0.4rem;
+  }
+
+  .admin-sidebar .submenu {
+    margin-top: 0.4rem;
+  }
+
+  /* Ensure logo area still visible (or can be hidden as desired) */
+  .admin-sidebar .sidebar-header {
+    transition: transform 200ms ease;
+  }
+
+  /* Make sure sidebar content uses full height and no rounding */
+  .admin-sidebar {
+    height: 100vh;
+    border-radius: 0;
+    overflow: auto;
+  }
 }

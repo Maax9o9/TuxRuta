@@ -124,68 +124,31 @@ h2.chart-title {
   }
 }
 
-@media (max-width: 768px) {
-  :host {
-    max-width: 100%;
-    width: calc(100% - 2rem);
-    margin: 1rem;
-    padding: 1rem;
-  }
-  
-  canvas {
-    width: 100% !important;
-    max-width: 100%;
-    height: 240px !important; // Aumentado para móviles
-    aspect-ratio: unset;
-  }
-  
+/* Responsive: scale down component to 80% on small screens */
+@media (max-width: 1024px) {
   .chart-container {
-    min-height: 240px;
-    max-width: 100%;
+    width: 94% !important;
+    margin: 0 auto !important;
+    transform: scale(0.94);
+    transform-origin: top center;
   }
-  
-  .summary-info {
-    flex-direction: column;
-    gap: 0.8rem;
-    
-    .info-item {
-      flex-direction: row;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0.5rem;
-    }
-  }
-  
-  .legend-custom {
-    flex-direction: column;
-    align-items: stretch;
-    
-    .legend-item {
-      justify-content: flex-start;
-    }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    width: 94% !important;
+    margin: 0.5rem auto !important;
+    transform: scale(0.94);
+    transform-origin: top center;
   }
 }
 
 @media (max-width: 480px) {
-  :host {
-    width: calc(100% - 1rem);
-    margin: 0.5rem;
-    padding: 0.8rem;
-  }
-  
-  canvas {
-    height: 200px !important;
-  }
-  
   .chart-container {
-    min-height: 200px;
-  }
-  
-  h2.chart-title {
-    font-size: 1.1rem;
-  }
-  
-  .info-item .value { 
-    font-size: 1.2rem;
+    width: 80% !important;
+    height: auto !important;
+    margin: 0.5rem auto !important;
+    transform: scale(0.94);
+    transform-origin: top center;
   }
 }

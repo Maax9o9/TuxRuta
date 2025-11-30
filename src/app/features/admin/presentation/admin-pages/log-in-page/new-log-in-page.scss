@@ -11,10 +11,11 @@
 }
 
 .background-image {
-  background-size: 100% 100% !important;
+  /* Make the background image responsive while keeping layout intact */
+  background-size: cover; /* scale and crop to fill while preserving aspect ratio */
   background-position: center center;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* keep fixed on desktop for visual effect */
   width: 100vw;
   height: 100vh;
 }
@@ -57,6 +58,12 @@
 @media (max-width: 768px) {
   .content-wrapper {
     padding: 1rem;
+  }
+  .background-image {
+    /* On small screens, avoid 'fixed' which can cause zoom/position issues */
+    background-attachment: scroll;
+    background-position: top center; /* prioritize top of image on narrow screens */
+    background-size: cover; /* ensure it fills area responsively */
   }
 }
 

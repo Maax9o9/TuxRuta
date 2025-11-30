@@ -1,9 +1,10 @@
 
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import type { Route } from '../../../admin/data/models/route.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-bar',
@@ -12,7 +13,7 @@ import type { Route } from '../../../admin/data/models/route.model';
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss'
 })
-export class SearchBarComponent {
+export class SearchBarComponent implements OnInit, OnDestroy, AfterViewInit {
   private _routes: Route[] = [];
   @Input() disabledInput: boolean = false;
   @Input() set routes(value: Route[]) {
@@ -25,6 +26,9 @@ export class SearchBarComponent {
   @Output() searchTextChange = new EventEmitter<string>();
   @Output() routeSelected = new EventEmitter<Route>();
   constructor(private router: Router) {}
+  // control para mostrar/ocultar el botón de búsqueda según la ruta
+  showSearchButton = false;
+  private routerSubscription?: Subscription;
   goToHome() {
     this.router.navigate(['/home']);
   }
@@ -66,8 +70,20 @@ export class SearchBarComponent {
     document.addEventListener('click', this.handleClickOutside, true);
   }
 
+  ngOnInit(): void {
+    // valor inicial
+    this.updateShowButton(this.router.url);
+    // suscribirse a cambios de ruta
+    this.routerSubscription = this.router.events.subscribe(event => {
+      // NavigationEnd es el más adecuado, pero import por simplicidad usamos url actualizado
+      // Si el evento tiene url, podemos extraerlo; para robustez, recalculamos desde router.url
+      this.updateShowButton(this.router.url);
+    });
+  }
+
   ngOnDestroy() {
     document.removeEventListener('click', this.handleClickOutside, true);
+    this.routerSubscription?.unsubscribe();
   }
 
   toggleSearch() {
@@ -75,6 +91,17 @@ export class SearchBarComponent {
     if (!this.searchExpanded) {
       this.searchText = '';
       this.searchTextChange.emit('');
+    }
+  }
+
+  private updateShowButton(url: string) {
+    // Mostrar botón sólo en la página de Rutas
+    // Rutas definidas en app.routes.ts como 'routes'
+    try {
+      const path = url.split('?')[0] || url;
+      this.showSearchButton = path === '/routes' || path.startsWith('/routes/');
+    } catch (e) {
+      this.showSearchButton = false;
     }
   }
 

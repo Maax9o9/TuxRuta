@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ColectiveRepository } from '../../../data/repository/colective-repository';
 import { RouteRepository } from '../../../data/repository/route-repository';
 import { Route } from '../../../data/models/route.model';
+import { Colective } from '../../../data/models/colective.model';
 
 @Component({
   selector: 'app-create-colective-form',
@@ -18,6 +19,8 @@ export class CreateColectiveFormComponent {
   @Output() cancelSave = new EventEmitter<void>();
   @Output() colectiveSaved = new EventEmitter<void>();
   colectiveForm: FormGroup;
+  colectives: Colective[] = [];
+  matriculaExists: boolean = false;
   alertVisible = true;
   showConfirmAlert = false;
   @Input() token: string | undefined;
@@ -45,6 +48,23 @@ export class CreateColectiveFormComponent {
         console.error('Error al obtener rutas', err);
       }
     });
+    // Obtener colectivos para validar duplicados
+    this.repository.getAll(this.token).subscribe({
+      next: (colectives) => {
+        this.colectives = colectives;
+      },
+      error: (err) => {
+        console.error('Error al obtener colectivos', err);
+      }
+    });
+
+    // Suscribir cambios en matricula para validar existencia
+    const matriculaControl = this.colectiveForm.get('matricula');
+    if (matriculaControl) {
+      matriculaControl.valueChanges.subscribe(value => {
+        this.checkMatriculaExists(value);
+      });
+    }
   }
 
   getAlertType(): string {
@@ -56,7 +76,7 @@ export class CreateColectiveFormComponent {
   }
 
   onSubmit(): void {
-    if (this.colectiveForm.valid) {
+    if (this.colectiveForm.valid && !this.matriculaExists) {
       this.confirmSave.emit();
     }
   }
@@ -93,5 +113,33 @@ export class CreateColectiveFormComponent {
   resetForm(): void {
     this.colectiveForm.reset();
     this.alertVisible = true;
+  }
+
+  private checkMatriculaExists(value: any) {
+    const val = (value || '').toString().trim().toUpperCase();
+    if (!val) {
+      this.matriculaExists = false;
+      const control = this.colectiveForm.get('matricula');
+      if (control && control.errors) {
+        const { exists, ...rest } = control.errors as any;
+        const hasOther = Object.keys(rest || {}).length > 0;
+        control.setErrors(hasOther ? rest : null);
+      }
+      return;
+    }
+    const found = this.colectives.some(c => (c.matricula || '').toString().trim().toUpperCase() === val);
+    this.matriculaExists = found;
+    const control = this.colectiveForm.get('matricula');
+    if (control) {
+      if (found) {
+        control.setErrors({ ...(control.errors || {}), exists: true });
+      } else {
+        if (control.errors) {
+          const { exists, ...rest } = control.errors as any;
+          const hasOther = Object.keys(rest || {}).length > 0;
+          control.setErrors(hasOther ? rest : null);
+        }
+      }
+    }
   }
 }

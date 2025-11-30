@@ -203,3 +203,37 @@
     max-width: 90%;
   }
 }
+
+/* Make card container horizontally scrollable on small screens
+   so cards appear side-by-side with side-scroll */
+@media (max-width: 768px) {
+  :host {
+    overflow: visible;
+  }
+
+  .card-container {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    max-height: none;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .card-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    flex: 0 0 80%;
+    width: auto;
+    max-width: 320px;
+    height: auto;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}

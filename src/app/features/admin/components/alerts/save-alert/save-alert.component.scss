@@ -149,3 +149,53 @@ h2 {
   font-size: 1rem;
   margin-bottom: 1.5rem;
 }
+
+/* Responsive adjustments for simple save alert */
+@media (max-width: 768px) {
+  .confirm-save-modal-container {
+    width: 90vw !important;
+    padding: 1.2rem !important;
+    border-radius: 12px;
+  }
+
+  .modal-content {
+    padding: 0 1rem !important;
+  }
+
+  .alert-header-with-icon {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    margin-top: 0;
+  }
+
+  .alert-header-text {
+    padding-left: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .confirm-save-modal-container {
+    width: 95vw !important;
+    padding: 0.9rem !important;
+    border-radius: 10px;
+  }
+
+  .icon-box {
+    width: 36px;
+    height: 36px;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}

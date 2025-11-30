@@ -55,3 +55,47 @@ body.modal-open {
     }
   }
 }
+
+/* Make table horizontally scrollable on small screens */
+.colective-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.colective-table {
+  /* Ensure table doesn't crush on narrow screens; allow horizontal scroll */
+  min-width: 720px;
+}
+
+@media (max-width: 1024px) {
+  .colective-table {
+    min-width: 620px;
+  }
+}
+
+@media (max-width: 768px) {
+  .colective-table {
+    min-width: 480px;
+    font-size: 0.95rem;
+  }
+  .colective-table th,
+  .colective-table td {
+    padding: 10px 12px;
+  }
+  .delete-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .colective-table {
+    min-width: 380px;
+    font-size: 0.9rem;
+  }
+  .colective-table th,
+  .colective-table td {
+    padding: 8px 10px;
+  }
+}

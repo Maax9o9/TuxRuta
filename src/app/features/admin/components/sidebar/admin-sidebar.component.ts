@@ -13,6 +13,21 @@ import { AdminUserRepository } from '../../data/repository/admin-user-repository
   styleUrls: ['./admin-sidebar.component.scss']
 })
 export class AdminSidebarComponent {
+  // Responsive sidebar state: collapsed=true => hidden on small screens
+  isCollapsed: boolean = true;
+
+  toggleSidebar(): void {
+    this.isCollapsed = !this.isCollapsed;
+    // add/remove body class so page content can shift on mobile
+    if (typeof document !== 'undefined') {
+      if (this.isCollapsed) {
+        document.body.classList.add('sidebar-collapsed-mobile');
+      } else {
+        document.body.classList.remove('sidebar-collapsed-mobile');
+      }
+    }
+  }
+
   iconPaths = {
     dashboard: 'dashboard1.png',
     metricas: 'metricas.png', 
@@ -51,6 +66,24 @@ export class AdminSidebarComponent {
     
     this.router.navigate([route]);
     this.currentRoute = route;
+    // Close sidebar on mobile after navigation for better UX
+    this.isCollapsed = true;
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('sidebar-collapsed-mobile');
+    }
+  }
+
+  ngOnInit(): void {
+    // ensure body class reflects initial collapsed state on client
+    if (typeof document !== 'undefined') {
+      if (this.isCollapsed) document.body.classList.add('sidebar-collapsed-mobile');
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('sidebar-collapsed-mobile');
+    }
   }
 
   isActiveRoute(route: string): boolean {
@@ -129,6 +162,6 @@ export class AdminSidebarComponent {
     this.adminUserRepository.removeToken();
     this.adminUserRepository.removeUser();
     localStorage.clear(); 
-    this.router.navigate(['/new-login']);
+    this.router.navigate(['/home']);
   }
 }
