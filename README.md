@@ -2,6 +2,72 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.4.
 
+## Cloning and Version Information / Información de Clonación y Versiones
+
+### English
+
+To clone this repository:
+
+```bash
+git clone https://github.com/Maax9o9/TuxRuta.git
+cd TuxRuta
+```
+
+**Current Version:** This project currently uses **Angular 20.0.x**.
+
+**To check available versions/tags:**
+```bash
+git tag -l
+```
+
+**To clone a specific version (if tags are available):**
+```bash
+git clone --branch <tag_name> https://github.com/Maax9o9/TuxRuta.git
+```
+
+**To switch to a specific version after cloning:**
+```bash
+git checkout <tag_name>
+# or
+git checkout <branch_name>
+```
+
+**Note:** Currently, this repository does not have version tags. To use a specific Angular version, you would need to check the commit history or create a branch with the desired Angular version.
+
+---
+
+### Español
+
+Para clonar este repositorio:
+
+```bash
+git clone https://github.com/Maax9o9/TuxRuta.git
+cd TuxRuta
+```
+
+**Versión Actual:** Este proyecto actualmente usa **Angular 20.0.x**.
+
+**Para verificar versiones/tags disponibles:**
+```bash
+git tag -l
+```
+
+**Para clonar una versión específica (si hay tags disponibles):**
+```bash
+git clone --branch <nombre_tag> https://github.com/Maax9o9/TuxRuta.git
+```
+
+**Para cambiar a una versión específica después de clonar:**
+```bash
+git checkout <nombre_tag>
+# o
+git checkout <nombre_rama>
+```
+
+**Nota:** Actualmente, este repositorio no tiene tags de versión. Para usar una versión específica de Angular (como la 18.00), necesitarías revisar el historial de commits o crear una rama con la versión deseada de Angular.
+
+---
+
 ## Development server
 
 To start a local development server, run:
