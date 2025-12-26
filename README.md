@@ -32,7 +32,10 @@ git checkout <tag_name>
 git checkout <branch_name>
 ```
 
-**Note:** Currently, this repository does not have version tags. To use a specific Angular version, you would need to check the commit history or create a branch with the desired Angular version.
+**Note:** Currently, this repository does not have version tags. To use a specific Angular version (like 18.00), you have several options:
+- Check the commit history for a version that used Angular 18
+- Create a branch and modify the `package.json` dependencies to use Angular 18.x versions, then run `npm install`
+- Use Angular's migration guide to downgrade or adjust versions as needed
 
 ---
 
@@ -64,7 +67,10 @@ git checkout <nombre_tag>
 git checkout <nombre_rama>
 ```
 
-**Nota:** Actualmente, este repositorio no tiene tags de versión. Para usar una versión específica de Angular (como la 18.00), necesitarías revisar el historial de commits o crear una rama con la versión deseada de Angular.
+**Nota:** Actualmente, este repositorio no tiene tags de versión. Para usar una versión específica de Angular (como la 18.00), tienes varias opciones:
+- Revisar el historial de commits para encontrar una versión que usaba Angular 18
+- Crear una rama y modificar las dependencias en `package.json` para usar versiones de Angular 18.x, luego ejecutar `npm install`
+- Usar la guía de migración de Angular para ajustar versiones según sea necesario
 
 ---
 
